@@ -2,6 +2,10 @@
 <!--Cambiando el title-->
 
 {% block customCSS %}
+<link rel="stylesheet" 
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link 
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link
   rel="stylesheet"
   href="{{ url_for('static', filename ='assets/css/file.css') }}" />
@@ -9,6 +13,8 @@
   href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
 <link rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css" />
+
+
 {% endblock %}
 
 <!--Inicio del block-->
@@ -17,8 +23,9 @@
   <div class="row justify-content-center mb-2 header sticky-header">
     <!-- Asegúrate de que el header tenga la clase sticky-header -->
     <div class="col-md-12">
-      <h3 class="text-center mt-5 mb-3 fw-bold">REGISTRO DE PLANES DE MEJORA
-        E INNOVACIÓN DIGITAL</h3>
+      <h3 class="text-center mt-5 mb-3 fw-bold">
+          REGISTRO DE PLANES DE MEJORA E INNOVACIÓN DIGITAL          
+      </h3>
       <hr />
     </div>
   </div>
@@ -34,6 +41,7 @@
           <div class="col-md-8">
             <label for="titulo" class="form-label fw-bold text-primary">
               Título Plan de mejora e innovación Digital:
+              <i class="fas fa-question-circle ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Probando"></i>
             </label>
             <input
               class="form-control"
@@ -46,6 +54,7 @@
           <div class="col-md-4">
             <label for="date_inicio" class="form-label fw-bold text-primary">
               Fecha de Inicio del proyecto de innovación digital:
+              <i class="fas fa-question-circle ms-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Probando"></i>
             </label>
             <input
               class="form-control"
@@ -208,3 +217,13 @@
     </body>
   </html>
   {% endblock %}
+
+  {% block customJS %}
+<script>
+  // Inicializa el tooltip de Bootstrap
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+</script>
+{% endblock %}
