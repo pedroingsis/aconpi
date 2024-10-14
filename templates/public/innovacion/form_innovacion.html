@@ -1,0 +1,210 @@
+{% extends 'public/base_cpanel.html' %}
+<!--Cambiando el title-->
+
+{% block customCSS %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename ='assets/css/file.css') }}" />
+<link rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css" />
+{% endblock %}
+
+<!--Inicio del block-->
+{% block body %}
+<div class="card" style="border-radius: 0px !important">
+  <div class="row justify-content-center mb-2 header sticky-header">
+    <!-- Asegúrate de que el header tenga la clase sticky-header -->
+    <div class="col-md-12">
+      <h3 class="text-center mt-5 mb-3 fw-bold">REGISTRO DE PLANES DE MEJORA
+        E INNOVACIÓN DIGITAL</h3>
+      <hr />
+    </div>
+  </div>
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-11" style="background-color: #e6e6e7;">
+      <form
+        class="form-horizontal mx-auto"
+        method="POST"
+        action="/registrar-innovacion"
+        autocomplete="off"
+        enctype="multipart/form-data">
+        <div class="row">
+          <div class="col-md-8">
+            <label for="titulo" class="form-label fw-bold text-primary">
+              Título Plan de mejora e innovación Digital:
+            </label>
+            <input
+              class="form-control"
+              type="text"
+              name="titulo"
+              id="titulo"
+              required />
+          </div>
+          <!-- Campo de fecha -->
+          <div class="col-md-4">
+            <label for="date_inicio" class="form-label fw-bold text-primary">
+              Fecha de Inicio del proyecto de innovación digital:
+            </label>
+            <input
+              class="form-control"
+              type="date"
+              name="date_inicio"
+              required />
+          </div>
+          <div class="col-md-6">
+            <br />
+            <label for="idea" class="form-label fw-bold text-primary">
+              Descripción delproyecto de innovación digital:
+            </label>
+            <textarea
+              class="form-control"
+              name="idea"
+              rows="2"></textarea>
+          </div>
+          <div class="col-md-6">
+            <br />
+            <label for="problema" class="form-label fw-bold text-primary">
+              Espacio del Problema:
+            </label>
+            <textarea
+              class="form-control"
+              name="problema"
+              rows="2"></textarea>
+          </div>
+          <div class="col-md-12">
+            <br />
+            <label for="afecta" class="form-label fw-bold text-primary">
+              Aspecto del negocio que afecta:
+            </label>
+            <textarea
+              class="form-control"
+              name="afecta"
+              rows="1"></textarea>
+          </div>
+          <div class="col-md-6">
+            <br />
+            <label for="definir_role" class="form-label fw-bold text-primary">
+              1. Definir roles de la empresa:
+            </label>
+            <textarea
+              class="form-control"
+              name="definir_role"
+              rows="2"></textarea>
+          </div>
+          <div class="col-md-6">
+            <br />
+            <label for="estrategias" class="form-label fw-bold text-primary">
+              2. Selección de Estrategias:
+            </label>
+            <textarea
+              class="form-control"
+              name="estrategias"
+              rows="2"></textarea>
+          </div>
+          <div class="col-md-12">
+            <br />
+            <label for="diseno" class="form-label fw-bold text-primary">
+              3. Diseño del proyecto de innovación digtial:
+            </label>
+            <textarea
+              class="form-control"
+              name="diseno"
+              rows="2"></textarea>
+          </div>
+          <!-- Nueva Lista Desplegable -->
+          <div class="col-md-12">
+            <br />
+            <label for="kim" class="form-label fw-bold text-primary">
+              seleccione la estrategia de la matriz del conocimiento (KIM):
+            </label>
+            <select class="form-control" name="kim" id="kim" required>
+              <option value="">Seleccione una opción</option>
+              {% set opciones = [
+                  "Automatización de procesos operativos, generación de alertas y reportes estratégicos para las partes interesadas",
+                  "Desarrollar un artefacto que permita centralizar los datos dispersos en el servidor de archivos",
+                  "Uso apropiado del CRM, paquete contable, inteligencia de negocios e inteligencia artificial",
+                  "Innovación limitada para el uso del CRM y seguimiento a proyectos de TI"
+              ] %}
+              
+              {% for opcion in opciones %}
+                  <option value="{{ opcion }}">{{ opcion }}</option>
+              {% endfor %}
+          </select>
+          </div>
+          <div class="col-md-12">
+            <br />
+            <label for="implementacion" class="form-label fw-bold text-primary">
+              4. Implementacion y Demostración:
+            </label>
+            <textarea
+              class="form-control"
+              name="implementacion"
+              rows="2"></textarea>
+          </div>
+          <div class="col-md-4">
+            <br />
+            <label for="date_implementacion"
+              class="form-label fw-bold text-primary">
+              Fecha plazo de implementación:
+            </label>
+            <input
+              class="form-control"
+              type="date"
+              name="date_implementacion"
+              required />
+          </div>
+          <div class="col-md-12">
+            <br />
+            <label for="evaluacion" class="form-label fw-bold text-primary">
+              4. Evaluación (Encuesta de percepción de la idea de Innovación
+              digital):
+            </label>
+            <textarea
+              class="form-control"
+              name="evaluacion"
+              rows="2"></textarea>
+          </div>
+          <div class="col-md-12">
+            <br />
+            <label for="diseñar" class="form-label fw-bold text-primary">
+              6. Diseñar, aprender y planear:
+            </label>
+            <textarea
+              class="form-control"
+              name="diseñar"
+              rows="2"></textarea>
+          </div>
+          <div class="col-md-12">
+            <br />
+            <label for="ajustes" class="form-label fw-bold text-primary">
+              Base de conocimiento (ajustes necesarios):
+            </label>
+            <textarea
+              class="form-control"
+              name="ajustes"
+              rows="2"></textarea>
+          </div>
+          <div class="col-md-4">
+            <br />
+            <label for="date_fin" class="form-label fw-bold text-primary">
+              Fecha terminación proyecto ID:
+            </label>
+            <input
+              class="form-control"
+              type="date"
+              name="date_fin"
+              required />
+          </div>
+          <div class="mb-3 mt-4 text-center">
+            <button type="submit" class="btn rounded-pill btn-primary">
+              Guardar registro ahora
+              <i class="bi bi-arrow-clockwise"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </body>
+  </html>
+  {% endblock %}
