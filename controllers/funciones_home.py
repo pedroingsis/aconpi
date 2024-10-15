@@ -270,36 +270,73 @@ def eliminarContrato(id_contrato):
         return []
  
  
-###INNOVACION  
 def procesar_form_innovaciones(dataForm):
     try:
         with connectionBD() as conexion_MySQLdb:
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
 
-                sql = ("INSERT INTO tbl_innovacion (titulo_idea, fecha_inicio, descripcion_idea, espacio_problema, aspecto, roles, estrategias, diseno,kim, implementacion,fecha_plazo, evaluacion, aprender_planear, ajustes, fecha_fin, usuario_registro) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)")
+                sql = ("INSERT INTO tbl_innovacion (titulo_idea, fecha_inicio, descripcion_idea, espacio_problema, aspecto, roles, estrategias, diseno, kim, implementacion, fecha_plazo, evaluacion, aprender_planear, ajustes, fecha_fin, usuario_registro) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
-                # Creando una tupla con los valores del INSERT
+                # Obtener valores del formulario
+                titulo = dataForm.get('titulo')
+                fecha_inicio = dataForm.get('date_inicio')
+                idea = dataForm.get('idea')
+                problema = dataForm.get('problema')
+                afecta = dataForm.get('afecta')
+                definir_role = dataForm.get('definir_role')
+                estrategias = dataForm.get('estrategias')
+                diseno = dataForm.get('diseno')
+                kim = dataForm.get('kim')
+                implementacion = dataForm.get('implementacion')
+                fecha_plazo = dataForm.get('date_implementacion')
+                evaluacion = dataForm.get('evaluacion')
+                aprender_planear = dataForm.get('diseñar')
+                ajustes = dataForm.get('ajustes')
+                fecha_fin = dataForm.get('date_fin')
+                usuario_registro = session.get('name_surname')
+
+                # Función para convertir cadenas vacías a None
+                def empty_to_none(value):
+                    return value if value.strip() else None
+
+                # Convertir campos de fecha vacíos a None
+                fecha_plazo = empty_to_none(fecha_plazo)
+                fecha_fin = empty_to_none(fecha_fin)
+
+                # También puedes convertir otros campos opcionales si es necesario
+                problema = empty_to_none(problema)
+                afecta = empty_to_none(afecta)
+                definir_role = empty_to_none(definir_role)
+                estrategias = empty_to_none(estrategias)
+                diseno = empty_to_none(diseno)
+                kim = empty_to_none(kim)
+                implementacion = empty_to_none(implementacion)
+                evaluacion = empty_to_none(evaluacion)
+                aprender_planear = empty_to_none(aprender_planear)
+                ajustes = empty_to_none(ajustes)
+
+                # Crear la tupla de valores
                 valores = (
-                    dataForm.get('titulo'),
-                    dataForm.get('date_inicio'),
-                    dataForm.get('idea'),
-                    dataForm.get('problema'),
-                    dataForm.get('afecta'),
-                    dataForm.get('definir_role'),
-                    dataForm.get('estrategias'),
-                    dataForm.get('diseno'),
-                    dataForm.get('kim'),
-                    dataForm.get('implementacion'),
-                    dataForm.get('date_implementacion'),
-                    dataForm.get('evaluacion'),
-                    dataForm.get('diseñar'),
-                    dataForm.get('ajustes'),
-                    dataForm.get('date_fin'),
-                    session.get('name_surname')
+                    titulo,
+                    fecha_inicio,
+                    idea,
+                    problema,
+                    afecta,
+                    definir_role,
+                    estrategias,
+                    diseno,
+                    kim,
+                    implementacion,
+                    fecha_plazo,
+                    evaluacion,
+                    aprender_planear,
+                    ajustes,
+                    fecha_fin,
+                    usuario_registro
                 )
-                
+
                 print("Tupla de valores:", valores)
-                
+
                 cursor.execute(sql, valores)
 
                 conexion_MySQLdb.commit()
@@ -548,11 +585,22 @@ def procesar_form_percepcion(dataForm, id_innovacion):
 
 
     # Lista de Innovación
-def sql_lista_percepcionesBD():
+def sql_lista_percepcionesBD(page, per_page):
     try:
+        offset = (page - 1) * per_page
         with connectionBD() as conexion_MySQLdb:
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
-                querySQL = """
+                # Obtener el total de registros para calcular el número de páginas
+                count_query = """
+                    SELECT COUNT(*) as total
+                    FROM bd_contratos.tbl_percepcion AS P
+                    LEFT JOIN bd_contratos.tbl_innovacion AS I ON I.id_innovacion = P.id_innovacion
+                """
+                cursor.execute(count_query)
+                total = cursor.fetchone()['total']
+                
+                # Consulta paginada
+                querySQL = f"""
                     SELECT 
                         P.id_percepcion,
                         P.tipo, 
@@ -561,16 +609,17 @@ def sql_lista_percepcionesBD():
                         P.fecha_registro,
                         P.usuario_registro,
                         I.titulo_idea
-                        FROM bd_contratos.tbl_percepcion AS P
-                        LEFT JOIN bd_contratos.tbl_innovacion AS I ON I.id_innovacion=P.id_innovacion 
-                        ORDER BY fecha_registro DESC,tipo DESC, pregunta DESC
-                    """
+                    FROM bd_contratos.tbl_percepcion AS P
+                    LEFT JOIN bd_contratos.tbl_innovacion AS I ON I.id_innovacion = P.id_innovacion
+                    ORDER BY fecha_registro DESC, tipo DESC, pregunta DESC
+                    LIMIT {per_page} OFFSET {offset}
+                """
                 cursor.execute(querySQL)
                 percepcionBD = cursor.fetchall()
-        return percepcionBD
+        return percepcionBD, total
     except Exception as e:
         print(f"Error en la función sql_lista_percepcionesBD: {e}")
-        return None 
+        return None, 0
 
 
 def eliminarPercepcion(id_percepcion):

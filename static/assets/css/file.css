@@ -62,3 +62,24 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Para un pequeño efecto de sombra */
 }
 
+.tab-content {
+  padding: 20px;
+  background-color: #e6e6e7;
+  border-radius: 0px;
+}
+
+.header {
+  background-color: #fff;
+  padding: 20px 0;
+}
+
+/* Mejorar la apariencia de los botones */
+.btn-custom {
+  min-width: 120px;
+}
+
+/* Ajustar el tamaño de los tooltips */
+.tooltip-inner {
+  max-width: 250px;
+}
+

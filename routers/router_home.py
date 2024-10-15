@@ -245,8 +245,11 @@ def viewFormPercepcion():
 @app.route('/lista-percepcion', methods=['GET'])
 def lista_percepcion():
     if 'conectado' in session:
-        percepcion = sql_lista_percepcionesBD()
-        return render_template('public/percepcion/lista_percepcion.html', percepcion=percepcion)
+        page = request.args.get('page', 1, type=int)
+        per_page = 15  # Número de registros por página
+        percepcion, total = sql_lista_percepcionesBD(page, per_page)
+        total_pages = (total + per_page - 1) // per_page  # Cálculo del número total de páginas
+        return render_template('public/percepcion/lista_percepcion.html', percepcion=percepcion, page=page, total_pages=total_pages)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
