@@ -223,6 +223,9 @@ def buscarContratoUnico(id):
         print(f"Ocurrió un error en def buscarContratoUnico: {e}")
         return []
     
+import os
+from werkzeug.utils import secure_filename
+
 def procesar_actualizacion_contrato(data):
     try:
         with connectionBD() as conexion_MySQLdb:
@@ -234,6 +237,8 @@ def procesar_actualizacion_contrato(data):
                 cantidad = data.form['valor']
                 fecha_inicio = data.form['fecha_inicio'] 
                 fecha_fin = data.form['fecha_fin']             
+
+                # Actualización en la tabla de contratos
                 querySQL = """
                     UPDATE tbl_contratos
                     SET 
@@ -245,11 +250,36 @@ def procesar_actualizacion_contrato(data):
                         fecha_fin= %s
                     WHERE id_contrato = %s
                 """
-                values = (documento, razon_social,objeto_contractual, cantidad,fecha_inicio,fecha_fin,id_contrato)
-
+                values = (documento, razon_social, objeto_contractual, cantidad, fecha_inicio, fecha_fin, id_contrato)
                 cursor.execute(querySQL, values)
                 conexion_MySQLdb.commit()
 
+                # Procesar archivos adicionales
+                if 'nuevo_archivo' in data.files:
+                    nuevos_archivos = data.files.getlist('nuevo_archivo')
+                    print(f"Archivos subidos: {[archivo.filename for archivo in nuevos_archivos]}")
+
+                    for archivo in nuevos_archivos:
+                        if archivo and allowed_file(archivo.filename):
+                            # Agregar marca de tiempo al nombre del archivo para evitar sobrescrituras
+                            filename = secure_filename(archivo.filename)
+                            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                            filename_with_timestamp = f"{timestamp}_{filename}"
+
+                            # Guardar el archivo en el servidor
+                            file_path = os.path.join(upload_dir, filename_with_timestamp)
+                            archivo.save(file_path)
+                            print(f"Archivo guardado en: {file_path}")
+
+                            # Insertar información del archivo en tbl_documentos
+                            queryArchivo = """
+                                INSERT INTO tbl_documentos (id_contrato, nombre_documento, usuario_registro)
+                                VALUES (%s, %s, %s)
+                            """
+                            valores_documento = (id_contrato, filename_with_timestamp, session['name_surname'])
+                            cursor.execute(queryArchivo, valores_documento)
+
+                conexion_MySQLdb.commit()
         return cursor.rowcount or []
     except Exception as e:
         print(f"Ocurrió un error en procesar_actualizar_contrato: {e}")
