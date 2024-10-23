@@ -1,0 +1,135 @@
+{% extends 'public/base_cpanel.html' %}
+<!--Cambiando el title-->
+
+{% block customCSS %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename ='assets/css/file.css') }}" />
+<link rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css" />
+{% endblock %}
+<!--Inicio del block-->
+{% block body %}
+<div class="card" style="border-radius: 0px !important">
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-12">
+      <h3 class="text-center mt-5 mb-3 fw-bold">REGISTRO DE CONTRATOS</h3>
+      <hr />
+    </div>
+  </div>
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-11" style="background-color: #e6e6e7;">
+      <form
+        class="form-horizontal mx-auto"
+        method="POST"
+        action="/registrar-contratos"
+        autocomplete="off"
+        enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-md-3">
+              <label for="documento" class="form-label fw-bold text-primary">
+                Documento (NIT)
+              </label>
+              <input
+                class="form-control"
+                type="INT"
+                name="documento"
+                id="documento"
+                required />
+            </div>
+            <div class="col-md-9">
+              <label for="razon_social" class="form-label fw-bold text-primary">
+                Razón Social
+              </label>
+              <input
+                  class="form-control"
+                  type="text"
+                  name="razon_social"
+                  id="razon_social"
+                  required />
+            </div>
+            <div class="row mt-4"> 
+            <div class="col-md-3">
+              <label for="valor" class="form-label fw-bold text-primary">
+                Valor
+              </label>
+              <input
+                class="form-control"
+                type="INT"
+                name="valor"
+                id="cantidad"
+                required />
+            </div>
+            <div class="col-md-9">
+              <label for="objeto_contractual" class="form-label fw-bold text-primary">
+                Objeto Contractual
+              </label>
+              <input
+                  class="form-control"
+                  type="text"
+                  name="objeto_contractual"
+                  id="objeto_contractual"
+                  required />
+            </div>
+          </div>                  
+            <div class="row mt-4"> 
+              <div class="col-md-3">
+                <label for="hora_inicio" class="form-label fw-bold text-primary" >
+                  Fecha Inicio
+                </label>
+                <input
+                  class="form-control"
+                  type="date"
+                  name="date_inicio"
+                  required />
+              </div>
+              <div class="col-md-3">
+                <label for="hora_fin" class="form-label fw-bold text-primary">
+                  Fecha Fin
+                </label>
+                <input
+                  class="form-control"
+                  type="date"
+                  name="date_fin"
+                  required />
+              </div>
+              <div class="col-md-6">
+                <label for="documentos_pdf" class="form-label fw-bold text-primary">
+                  Cargar Documentos (PDF)
+                </label>
+                <input
+                  class="form-control"
+                  type="file"
+                  name="documentos_pdf"
+                  id="documentos_pdf"
+                  accept="application/pdf"
+                  multiple
+                  required />
+              </div>          
+            </div>             
+          </div>
+          <div class="row mt-5"></div>         
+          <div class="mb-3 mt-4 text-center">
+            <button type="submit" class="btn rounded-pill btn-primary">
+              Guardar registro ahora
+              <i class="bi bi-arrow-clockwise"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block customJS %}
+<script
+  src="{{ url_for('static', filename ='assets/customJS/file.js') }}"></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+<script
+  src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+
+{% endblock %}

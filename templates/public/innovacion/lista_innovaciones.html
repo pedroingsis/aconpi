@@ -1,0 +1,77 @@
+{% extends 'public/base_cpanel.html' %}
+<!--Cambiando el title-->
+{% block title %}AconpiExpress | Lista de Innovaciones{% endblock %}
+<!--Inicio del block-->
+{% block body %}
+
+<div class="card" style="border-radius: 0px !important">
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-12 mb-4">
+      <h3 class="text-center mt-2 mb-3">LISTA DE PLANES DE MEJORA E INNOVACIÓN DIGITAL</h3>
+      <hr />
+    </div>
+
+    <div class="row justify-content-end">
+    </div>
+
+    <div class="row justify-content-center mb-2">
+      <div class="table-responsive text-nowrap table-hover" style="max-height: 500px; overflow-y: auto;">
+        <table
+          table-hover
+          id="tbl_innovacion"
+          class="table table-striped table-bordered"
+          cellspacing="0"
+          width="100%">
+          <thead>
+            <tr>
+              <th style=" position: sticky; top: 0; background: #395c83; color: white; z-index: 1;">#</th>
+              <th style=" position: sticky; top: 0; background: #395c83; color: white; z-index: 1;">INNOVACIÓN DIGITAL</th>
+              <th style=" position: sticky; top: 0; background: #395c83; color: white; z-index: 1;">FECHA INICIO</th>
+              <th style=" position: sticky; top: 0; background: #395c83; color: white; z-index: 1;">DESCRIPCIóN</th>
+              <th style=" position: sticky; top: 0; background: #395c83; color: white; z-index: 1;">ACCIóN</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for innovacion in innovacion %}
+            <tr id="innovacion_{{ innovacion.id_innovacion }}">
+              <td>{{ loop.index }}</td>
+              <td>{{ innovacion.titulo_idea }}</td>
+              <td>{{ innovacion.fecha_inicio}}</td>
+              <td>{{ innovacion.descripcion_idea }}</td>
+              <td width="10px">
+                <a
+                  href="/detalles-innovacion/{{ innovacion.id_innovacion }}"
+                  title="Ver envio"
+                  type="button"
+                  class="btn btn-info btn-sm"
+                  data-bs-toggle="tooltip"
+                  data-bs-offset="0,4"
+                  data-bs-placement="top"
+                  data-bs-html="true"
+                  title="<span>Ver detalles</span>">
+                  <i class="bi bi-eye"></i>
+                  Ver detalles
+                </a>
+                <a
+                  href="#"
+                  onclick="eliminarInnovacion('{{ innovacion.id_innovacion }}');"
+                  class="btn btn-danger btn-sm"
+                  data-bs-toggle="tooltip"
+                  data-bs-offset="0,4"
+                  data-bs-placement="top"
+                  data-bs-html="true"
+                  title="<span>Eliminar Innovacion {{ innovacion.id_innovacion }}</span>">
+                  <i class="bi bi-trash3"></i>
+                  Eliminar
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

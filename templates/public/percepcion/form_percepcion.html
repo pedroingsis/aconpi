@@ -1,0 +1,235 @@
+{% extends 'public/base_cpanel.html' %}
+<!-- Cambiando el title -->
+
+{% block customCSS %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename ='assets/css/file.css') }}" />
+<link rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css" />
+{% endblock %}
+
+<!-- Inicio del block -->
+{% block body %}
+<div class="card" style="border-radius: 0px !important">
+  <div class="row justify-content-center mb-2 header sticky-header">
+    <!-- Asegúrate de que el header tenga la clase sticky-header -->
+    <div class="col-md-12">
+      <h3 class="text-center mt-5 mb-3 fw-bold">ENCUESTA DE EXPECTATIVAS DE USO
+        DEL PROYECTO DE INNOVACIÓN DIGITAL</h3>
+      <hr />
+    </div>
+  </div>
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-11" style="background-color: #e6e6e7;">
+      <form
+        class="form-horizontal mx-auto"
+        method="POST"
+        action="/registrar-percepcion"
+        autocomplete="off"
+        enctype="multipart/form-data">
+        <div class="row">
+          <div class="col-md-12">
+            <label for="titulo" class="form-data fw-bold text-primary">
+              Responda las siguientes preguntas de acuerdo a las siguientes
+              valoraciones:
+            </label>
+            <div>
+              <ol style="list-style-type: decimal;">
+                <li>Totalmente en desacuerdo.</li>
+                <li>En desacuerdo.</li>
+                <li>Algo en Desacuerdo.</li>
+                <li>Ni de Acuerdo ni en desacuerdo.</li>
+                <li>Algo de acuerdo.</li>
+                <li>De acuerdo.</li>
+                <li>Totalmente de acuerdo.</li>
+              </ol>
+            </div>
+            <div class="row mt-4">
+              <div class="col-md-6">
+                <label for="id_innovacion"
+                  class="form-label fw-bold text-primary">
+                  Título Plan de Mejora e Innovación Digital:
+                </label>
+                <select class="form-control" name="id_innovacion"
+                  id="id_innovacion" required>
+                  <option value>Seleccione una opción</option>
+                  {% for innovacion in innovaciones %}
+                  <option value="{{ innovacion.id_innovacion }}">{{
+                    innovacion.titulo_idea }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <br>
+
+            <!-- Sección 1: Espectativa de Rendimiento -->
+            <label for="titulo" class="form-data fw-bold text-primary"
+              style="color: blue;">
+              1. Espectativa de Rendimiento:
+            </label>
+
+            <!-- Pregunta 1 -->
+            <div class="row mt-4 align-items-center">
+              <div class="col-md-8">
+                <p><strong>- La implementación la innovación digital me permitirá ser
+                    eficiente en mi desempeño laboral.</strong></p>
+              </div>
+              <div class="col-md-4 d-flex justify-content-around">
+                {% for i in range(1, 8) %}
+                <label class="d-flex align-items-center">
+                  <input type="radio" name="pregunta1" value="{{ i }}" required>
+                  <span class="ms-1">{{ i }}</span>
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Pregunta 2 -->
+            <div class="row mt-4 align-items-center">
+              <div class="col-md-8">
+                <p><strong>- Me siento comprometido con la implementación del
+                    proyecto de innovación digital; esto me ayudará a mejorar la calidad de mi
+                    trabajo.</strong></p>
+              </div>
+              <div class="col-md-4 d-flex justify-content-around">
+                {% for i in range(1, 8) %}
+                <label class="d-flex align-items-center">
+                  <input type="radio" name="pregunta2" value="{{ i }}" required>
+                  <span class="ms-1">{{ i }}</span>
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Sección 2: Expectativa de Esfuerzo -->
+            <label for="titulo" class="form-data fw-bold text-primary"
+              style="color: blue;">
+              2. Expectativa de Esfuerzo:
+            </label>
+
+            <!-- Pregunta 3 -->
+            <div class="row mt-4 align-items-center">
+              <div class="col-md-8">
+                <p><strong>- Aprendiendo y usando la implementación de la innovación digital con todas sus
+                    características, cumpliré fácilmente mis
+                    tareas.</strong></p>
+              </div>
+              <div class="col-md-4 d-flex justify-content-around">
+                {% for i in range(1, 8) %}
+                <label class="d-flex align-items-center">
+                  <input type="radio" name="pregunta3" value="{{ i }}" required>
+                  <span class="ms-1">{{ i }}</span>
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Pregunta 4 -->
+            <div class="row mt-4 align-items-center">
+              <div class="col-md-8">
+                <p><strong>- Me siento satisfecho utilizando la propuesta
+                    implementada en el proyecto de innovación digital y poder cumplir con todas mis tareas
+                    a tiempo.</strong></p>
+              </div>
+              <div class="col-md-4 d-flex justify-content-around">
+                {% for i in range(1, 8) %}
+                <label class="d-flex align-items-center">
+                  <input type="radio" name="pregunta4" value="{{ i }}" required>
+                  <span class="ms-1">{{ i }}</span>
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Sección 3: Condiciones Facilitadoras -->
+            <label for="titulo" class="form-data fw-bold text-primary"
+              style="color: blue;">
+              3. Condiciones Facilitadoras:
+            </label>
+
+            <!-- Pregunta 5 -->
+            <div class="row mt-4 align-items-center">
+              <div class="col-md-8">
+                <p><strong>- Creo que existe apoyo organizacional para el uso
+                    de la innovación digital en mis tareas laborales.</strong></p>
+              </div>
+              <div class="col-md-4 d-flex justify-content-around">
+                {% for i in range(1, 8) %}
+                <label class="d-flex align-items-center">
+                  <input type="radio" name="pregunta5" value="{{ i }}" required>
+                  <span class="ms-1">{{ i }}</span>
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Pregunta 6 -->
+            <div class="row mt-4 align-items-center">
+              <div class="col-md-8">
+                <p><strong>- Dispongo de los recursos necesarios para utilizar
+                    el la innovación digital en mi trabajo diario.</strong></p>
+              </div>
+              <div class="col-md-4 d-flex justify-content-around">
+                {% for i in range(1, 8) %}
+                <label class="d-flex align-items-center">
+                  <input type="radio" name="pregunta6" value="{{ i }}" required>
+                  <span class="ms-1">{{ i }}</span>
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Sección 4: Actitud para el uso de la idea de Innovación -->
+            <label for="titulo" class="form-data fw-bold text-primary"
+              style="color: blue;">
+              4. Actitud para el uso de la idea de Innovación:
+            </label>
+
+            <!-- Pregunta 7 -->
+            <div class="row mt-4 align-items-center">
+              <div class="col-md-8">
+                <p><strong>- Tengo una actitud positiva para adoptar la iniciativa
+                    de innovación digital</strong></p>
+              </div>
+              <div class="col-md-4 d-flex justify-content-around">
+                {% for i in range(1, 8) %}
+                <label class="d-flex align-items-center">
+                  <input type="radio" name="pregunta7" value="{{ i }}" required>
+                  <span class="ms-1">{{ i }}</span>
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Pregunta 8 -->
+            <div class="row mt-4 align-items-center">
+              <div class="col-md-8">
+                <p><strong>- Considero beneficioso el proyecto de innovación digital para mi empresa; le
+                    ayudará a seguir siendo más competitiva.</strong></p>
+              </div>
+              <div class="col-md-4 d-flex justify-content-around">
+                {% for i in range(1, 8) %}
+                <label class="d-flex align-items-center">
+                  <input type="radio" name="pregunta8" value="{{ i }}" required>
+                  <span class="ms-1">{{ i }}</span>
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="mb-3 mt-4 text-center">
+              <button type="submit" class="btn rounded-pill btn-primary">
+                Guardar registro ahora
+                <i class="bi bi-arrow-clockwise"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

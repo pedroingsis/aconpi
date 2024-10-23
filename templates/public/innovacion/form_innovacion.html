@@ -1,0 +1,409 @@
+{% extends 'public/base_cpanel.html' %}
+<!-- Cambiando el título -->
+
+{% block customCSS %}
+<!-- Font Awesome -->
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<!-- Bootstrap 3 CSS -->
+<link rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+
+<!-- Bootstrap Select CSS -->
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css" />
+
+<!-- Tu CSS personalizado -->
+<link rel="stylesheet"
+  href="{{ url_for('static', filename='assets/css/file.css') }}" />
+
+<style>
+  /* Estilos para resaltar campos con errores */
+  .has-error .form-control {
+    border-color: #a94442;
+  }
+
+  .has-error .form-label {
+    color: #a94442;
+  }
+</style>
+
+{% endblock %}
+
+<!-- Inicio del bloque body -->
+{% block body %}
+<div class="container">
+  <div class="card"
+    style="border-radius: 0px !important; padding: 20px; margin-top: 20px;">
+    <div class="row justify-content-center mb-2 header sticky-header">
+      <div class="col-md-12">
+        <h3 class="text-center mt-5 mb-3 fw-bold">
+          REGISTRO DE PLANES DE MEJORA E INNOVACIÓN DIGITAL
+        </h3>
+        <hr />
+      </div>
+    </div>
+
+    <!-- Formulario -->
+    <form id="multi-step-form" method="post" action="/registrar-innovacion" enctype="multipart/form-data">
+      <!-- Pestañas de navegación -->
+      <ul class="nav nav-tabs" id="formTabs">
+        <li class="active"><a href="#step-1" data-toggle="tab">Información del
+            Proyecto</a></li>
+        <li><a href="#step-2" data-toggle="tab">Detalles del Proyecto</a></li>
+        <li><a href="#step-3" data-toggle="tab">Implementación y
+            Evaluación</a></li>
+      </ul>
+
+      <!-- Contenido de las pestañas -->
+      <div class="tab-content">
+        <!-- Paso 1 -->
+        <div class="tab-pane fade in active" id="step-1">
+          <div class="row">
+            <!-- Título Plan de mejora e innovación Digital -->
+            <div class="col-md-8">
+              <div class="form-group">
+                <label for="titulo" class="form-label fw-bold text-primary">
+                  Título Plan de mejora e innovación Digital: <span class="text-danger">*</span>
+                  <i class="fas fa-question-circle ms-2" data-toggle="tooltip"
+                    data-placement="top" title="Probando"></i>
+                </label>
+                <input
+                  class="form-control"
+                  type="text"
+                  name="titulo"
+                  id="titulo"
+                  required />
+              </div>
+            </div>
+
+            <!-- Fecha de Inicio del proyecto de innovación digital -->
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="date_inicio" class="form-label fw-bold text-primary">
+                  Fecha de Inicio del proyecto: <span class="text-danger">*</span>
+                  <i class="fas fa-question-circle ms-2" data-toggle="tooltip"
+                    data-placement="top" title="Probando"></i>
+                </label>
+                <input
+                  class="form-control"
+                  type="date"
+                  name="date_inicio"
+                  required />
+              </div>
+            </div>
+
+            <!-- Descripción del proyecto de innovación digital -->
+            <div class="col-md-6">
+              <br />
+              <div class="form-group">
+                <label for="idea" class="form-label fw-bold text-primary">
+                  Descripción del proyecto de innovación digital: <span class="text-danger">*</span>
+                  <i class="fas fa-question-circle ms-2" data-toggle="tooltip"
+                    data-placement="top" title="Probando"></i>
+                </label>
+                <textarea
+                  class="form-control"
+                  name="idea"
+                  rows="3" required></textarea>
+              </div>
+            </div>
+
+            <!-- Espacio del Problema -->
+            <div class="col-md-6">
+              <br />
+              <div class="form-group">
+                <label for="problema" class="form-label fw-bold text-primary">
+                  Espacio del Problema:
+                </label>
+                <textarea
+                  class="form-control"
+                  name="problema"
+                  rows="3"></textarea>
+              </div>
+            </div>
+
+            <!-- Aspecto del negocio que afecta -->
+            <div class="col-md-12">
+              <br />
+              <div class="form-group">
+                <label for="afecta" class="form-label fw-bold text-primary">
+                  Aspecto del negocio que afecta:
+                </label>
+                <textarea
+                  class="form-control"
+                  name="afecta"
+                  rows="2"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paso 2: Detalles del Proyecto -->
+        <div class="tab-pane fade" id="step-2">
+          <div class="row">
+            <!-- 1. Definir roles de la empresa -->
+            <div class="col-md-6">
+              <br />
+              <div class="form-group">
+                <label for="definir_role" class="form-label fw-bold text-primary">
+                  1. Definir roles de la empresa:
+                </label>
+                <textarea
+                  class="form-control"
+                  name="definir_role"
+                  rows="2"></textarea>
+              </div>
+            </div>
+
+            <!-- 2. Selección de Estrategias -->
+            <div class="col-md-6">
+              <br />
+              <div class="form-group">
+                <label for="estrategias" class="form-label fw-bold text-primary">
+                  2. Selección de Estrategias:
+                </label>
+                <textarea
+                  class="form-control"
+                  name="estrategias"
+                  rows="2"></textarea>
+              </div>
+            </div>
+
+            <!-- 3. Diseño del proyecto de innovación digital -->
+            <div class="col-md-12">
+              <br />
+              <div class="form-group">
+                <label for="diseno" class="form-label fw-bold text-primary">
+                  3. Diseño del proyecto de innovación digital:
+                </label>
+                <textarea
+                  class="form-control"
+                  name="diseno"
+                  rows="2"></textarea>
+              </div>
+            </div>
+
+            <!-- Seleccione la estrategia de la matriz del conocimiento (KIM) -->
+            <div class="col-md-12">
+              <br />
+              <div class="form-group">
+                <label for="kim" class="form-label fw-bold text-primary">
+                  Seleccione la estrategia de la matriz del conocimiento (KIM):
+                </label>
+                <select class="form-control" name="kim" id="kim">
+                  <option value="">Seleccione una opción</option>
+                  {% set opciones = [
+                    "Automatización de procesos operativos, generación de alertas y reportes estratégicos para las partes interesadas",
+                    "Desarrollar un artefacto que permita centralizar los datos dispersos en el servidor de archivos",
+                    "Uso apropiado del CRM, paquete contable, inteligencia de negocios e inteligencia artificial",
+                    "Innovación limitada para el uso del CRM y seguimiento a proyectos de TI"
+                  ] %}
+
+                  {% for opcion in opciones %}
+                  <option value="{{ opcion }}">{{ opcion }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <!-- 4. Implementación y Demostración -->
+            <div class="col-md-12">
+              <br />
+              <div class="form-group">
+                <label for="implementacion"
+                  class="form-label fw-bold text-primary">
+                  4. Implementación y Demostración:
+                </label>
+                <textarea
+                  class="form-control"
+                  name="implementacion"
+                  rows="2"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paso 3: Implementación y Evaluación -->
+        <div class="tab-pane fade" id="step-3">
+          <div class="row">
+            <!-- Fecha plazo de implementación -->
+            <div class="col-md-4">
+              <br />
+              <div class="form-group">
+                <label for="date_implementacion"
+                  class="form-label fw-bold text-primary">
+                  Fecha plazo de implementación:
+                </label>
+                <input
+                  class="form-control"
+                  type="date"
+                  name="date_implementacion" />
+              </div>
+            </div>
+
+            <!-- 4. Evaluación -->
+            <div class="col-md-12">
+              <br />
+              <div class="form-group">
+                <label for="evaluacion" class="form-label fw-bold text-primary">
+                  4. Evaluación (Encuesta de percepción de la idea de Innovación
+                  digital):
+                </label>
+                <textarea
+                  class="form-control"
+                  name="evaluacion"
+                  rows="2"></textarea>
+              </div>
+            </div>
+
+            <!-- 6. Diseñar, aprender y planear -->
+            <div class="col-md-12">
+              <br />
+              <div class="form-group">
+                <label for="diseñar" class="form-label fw-bold text-primary">
+                  6. Diseñar, aprender y planear:
+                </label>
+                <textarea
+                  class="form-control"
+                  name="diseñar"
+                  rows="2"></textarea>
+              </div>
+            </div>
+
+            <!-- Base de conocimiento (ajustes necesarios) -->
+            <div class="col-md-12">
+              <br />
+              <div class="form-group">
+                <label for="ajustes" class="form-label fw-bold text-primary">
+                  Base de conocimiento (ajustes necesarios):
+                </label>
+                <textarea
+                  class="form-control"
+                  name="ajustes"
+                  rows="2"></textarea>
+              </div>
+            </div>
+
+            <!-- Fecha terminación proyecto ID -->
+            <div class="col-md-4">
+              <br />
+              <div class="form-group">
+                <label for="date_fin" class="form-label fw-bold text-primary">
+                  Fecha terminación proyecto ID:
+                </label>
+                <input
+                  class="form-control"
+                  type="date"
+                  name="date_fin" />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <br />
+              <div class="form-group">
+                <label for="documentos_pdf" class="form-label fw-bold text-primary">
+                  Cargar Documentos (PDF):
+                </label>
+                <input
+                  class="form-control"
+                  type="file"
+                  name="documentos_pdf"
+                  id="documentos_pdf"
+                  accept="application/pdf"
+                  multiple/>
+              </div>              
+            </div>
+          </div>          
+          <!-- Botón Guardar -->
+          <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary btn-custom">
+              Guardar registro ahora
+              <i class="fa fa-arrow-clockwise"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block customJS %}
+<!-- jQuery -->
+<script
+  src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Bootstrap 3 JS -->
+<script
+  src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<!-- Bootstrap Select JS -->
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+
+<script>
+  var currentStep = 1;
+  var totalSteps = 3;
+
+  function updateStep() {
+    $('.nav-tabs li').removeClass('active');
+    $('.nav-tabs li').eq(currentStep - 1).addClass('active');
+    $('.tab-pane').removeClass('in active');
+    $('#step-' + currentStep).addClass('in active');
+    // Scroll hacia arriba al cambiar de pestaña
+    $('html, body').animate({
+      scrollTop: $(".header").offset().top
+    }, 500);
+  }
+
+  $(document).ready(function () {
+    // Inicializa los tooltips de Bootstrap 3
+    $('[data-toggle="tooltip"]').tooltip();
+
+    // Manejo de las pestañas con Bootstrap 3
+    $('.nav-tabs a').click(function (e) {
+      e.preventDefault();
+      $(this).tab('show');
+      // Actualiza currentStep
+      currentStep = $(this).parent().index() + 1;
+      // Scroll hacia arriba al cambiar de pestaña
+      $('html, body').animate({
+        scrollTop: $(".header").offset().top
+      }, 500);
+    });
+
+    // Validación del formulario
+    $('#multi-step-form').on('submit', function (event) {
+      var isValid = true;
+      var firstInvalidStep = null;
+
+      // Verificar campos obligatorios en cada paso
+      for (var step = 1; step <= totalSteps; step++) {
+        $('#step-' + step + ' input[required], #step-' + step + ' textarea[required], #step-' + step + ' select[required]').each(function () {
+          if (!$(this).val()) {
+            isValid = false;
+            $(this).closest('.form-group').addClass('has-error');
+            if (firstInvalidStep === null) {
+              firstInvalidStep = step;
+            }
+          } else {
+            $(this).closest('.form-group').removeClass('has-error');
+          }
+        });
+      }
+
+      // Si el formulario no es válido, evitar el envío y mostrar errores
+      if (!isValid) {
+        event.preventDefault();
+        alert('Por favor, completa los campos obligatorios.');
+
+        // Cambiar a la pestaña del primer error
+        if (firstInvalidStep) {
+          currentStep = firstInvalidStep;
+          updateStep();
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}
+

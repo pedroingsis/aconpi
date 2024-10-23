@@ -1,0 +1,112 @@
+{% extends 'public/base_cpanel.html' %}
+<!--Cambiando el title-->
+{% block title %}AconpiExpress | Registrar Operacion Diaria{% endblock %}
+<!---->
+{% block customCSS %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename ='assets/css/file.css') }}" />
+{% endblock %}
+
+<!--Inicio del block-->
+{% block body %}
+<!---->
+{% if (detalle_contrato|length) %}
+<div class="card" style="border-radius: 0px !important">
+  <div class="row justify-content-center mb-0">
+    <div class="col-md-12">
+      <h3 class="text-center mt-5 mb-3">
+        <a href="/lista-de-contratos">
+          <i class="bi bi-arrow-left-circle"></i>
+        </a>
+        INFORMACIÓN DEL CONTRATO
+      </h3>
+      <hr />
+    </div>
+  </div>
+  <div class="row justify-content-center mb-1">
+    <div class="col-md-10">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-3">
+            <label for="id_contrato" class="form-label fw-bold text-primary">
+              ID CONTRATO
+            </label>
+            <div class="form-control" readonly> {{detalle_contrato.id_contrato}} </div>
+          </div>
+          <div class="col-md-3">
+            <label for="documento" class="form-label fw-bold text-primary">
+              DOCUMENTO
+            </label>
+            <div class="form-control" readonly>
+              {{ detalle_contrato.documento}}
+            </div>
+          </div>        
+          <div class="col-md-6">
+            <label for="razon_social" class="form-label fw-bold text-primary">
+              RAZON SOCIAL
+            </label>
+            <div class="form-control" readonly>{{ detalle_contrato.razon_social}}</div>            
+          </div>                   
+        </div>
+        <div class="row mt-4">
+          <div class="col-md-3">
+            <label for="moneda" class="form-label fw-bold text-primary">
+              VALOR
+            </label>
+            <div class="form-control" readonly>${{ "{:,.0f}".format(detalle_contrato.cantidad | float) }}</div>
+          </div>
+          <div class="col-md-9">
+            <label for="objeto_contractual" class="form-label fw-bold text-primary">
+              OBJETO CONTRACTUAL
+            </label>
+            <textarea
+                class="form-control" readonly
+                rows="1">{{detalle_contrato.objeto_contractual}}</textarea>
+          </div>
+          <div class="row mt-4">
+          <div class="col-md-3">
+            <label for="Fecha_hora_inicio" class="form-label fw-bold text-primary">
+              FECHA INICIO
+            </label>
+            <div class="form-control" readonly> {{ detalle_contrato.fecha_inicio.strftime('%Y-%m-%d') }}  </div> <!-- Sin comillas dobles -->
+          </div> 
+          <div class="col-md-3">
+            <label for="fecha_fin" class="form-label fw-bold text-primary">
+              FECHA FIN
+            </label>
+            <div class="form-control" readonly>{{ detalle_contrato.fecha_fin.strftime('%Y-%m-%d') }}</div>
+          </div>
+          <div class="col-md-3">
+            <label for="fecha_registro" class="form-label fw-bold text-primary">
+              FECHA Y HORA REGISTRO
+            </label>
+            <div class="form-control" readonly>{{ detalle_contrato.fecha_registro}}</div>
+          </div>           
+        </div>
+        <div class="row mt-4">
+          <div class="col-md-12">
+            <label for="archivos" class="form-label fw-bold text-primary">ARCHIVOS ADJUNTOS</label>
+            <ul>
+              {% for documento in detalle_contrato.documentos %}
+                <li>
+                  <a href="{{ url_for('uploaded_file', filename=documento.nombre_documento) }}" target="_blank">
+                    Ver {{ documento.nombre_documento }}
+                </a>
+                </li>
+              {% else %}
+                <p>No hay archivos adjuntos.</p>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>       
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<h2 class="text-center">
+  No existe el contrato 😭
+  <hr />
+</h2>
+{% endif %} {% endblock %}
