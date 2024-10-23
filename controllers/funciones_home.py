@@ -317,7 +317,6 @@ def allowed_file(filename):
 
 
 def procesar_form_innovaciones(dataForm, request):
-    print("Archivos en request.files:", request.files)  # Depuración inicial
     try:
         with connectionBD() as conexion_MySQLdb:
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
@@ -429,7 +428,6 @@ def procesar_form_innovaciones(dataForm, request):
     except Exception as e:
         print(f"Error en procesar_form_innovaciones: {str(e)}")
         return f'Se produjo un error en procesar_form_innovaciones: {str(e)}', 500
-
 
 def obtener_id_innovacion():
     try:

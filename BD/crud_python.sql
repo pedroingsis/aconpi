@@ -65,6 +65,7 @@ CREATE TABLE `tbl_documentos` (
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
+
 CREATE TABLE `tbl_documentos_innovacion` (
   `id_documento` int NOT NULL AUTO_INCREMENT,
   `id_innovacion` int ,
@@ -73,7 +74,6 @@ CREATE TABLE `tbl_documentos_innovacion` (
   `usuario_registro` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id_documento`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 
 
 CREATE TABLE `tbl_kim` (
@@ -90,3 +90,4 @@ INSERT INTO `tbl_kim` (`id_kim`, `nombre_kim`, `descripcion_kim`) VALUES
 (4, 'Exaptación', 'Innovación limitada para el uso del CRM y seguimiento a proyectos de TI');
 
 
+(4, 'Exaptación', 'Innovación limitada para el uso del CRM y seguimiento a proyectos de TI');
