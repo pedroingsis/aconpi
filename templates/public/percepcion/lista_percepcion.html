@@ -4,18 +4,15 @@
 <!--Inicio del block-->
 {% block body %}
 
-<div class="card" style="border-radius: 0px !important">
-  <div class="row justify-content-center mb-2">
-    <div class="col-md-12 mb-4">
-      <h3 class="text-center mt-2 mb-3">LISTA DE ECUESTAS APLICADAS A LA INNOVACIÓN DIGITAL</h3>
-      <hr />
+<div class="card">
+  <div class="row justify-content-center mb-2 p-1">
+    <div class="col-md-12 ps-4 pe-4">
+      <h3 class="text-center mt-5 mb-3 fw-bold">LISTA DE ECUESTAS APLICADAS A LA INNOVACIÓN DIGITAL</h3>
+      <hr>
     </div>
 
-    <div class="row justify-content-end">
-    </div>
-
-    <div class="row justify-content-center mb-2">
-      <div class="table-responsive text-nowrap table-hover"
+    <div class="row justify-content-center mb-2 ps-4 pe-4">
+      <div class="table-responsive text-nowrap table-hover ps-2 pe-0"
         style="max-height: 500px; overflow-y: auto;">
         <table
           table-hover
@@ -79,7 +76,7 @@
     <!-- Controles de paginación -->
     <div class="row justify-content-center">
       <nav aria-label="Page navigation">
-        <ul class="pagination">
+        <ul class="pagination d-flex">
           <!-- Flecha de retroceso -->
           {% if page > 1 %}
           <li class="page-item">

@@ -234,3 +234,17 @@ tbody tr:hover {
   min-width: 44% !important;
   background-color: #f3efef !important;
 }
+
+.layout-page{
+  background: linear-gradient(to right, #bdc3c7, #2c3e50);
+}
+.layout-menu{
+  box-shadow: 3px 0px 5px 0px rgba(0, 0, 0, 0.3) !important
+}
+.dropdown-menu{
+  background-color: #a6aeb4 !important;
+}
+
+.table th{
+  background: #a2aab1 !important;
+}

@@ -54,18 +54,20 @@
 
 .sticky-header {
   position: -webkit-sticky; /* Safari */
-  position: sticky;
+  
   top: 0;
   z-index: 1000; /* Asegúrate de que se mantenga visible sobre otros elementos */
   background-color: white; /* Puedes cambiarlo por el color que prefieras */
   padding: 10px 0; /* Ajusta el padding si es necesario */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Para un pequeño efecto de sombra */
 }
 
 .tab-content {
   padding: 20px;
-  background-color: #e6e6e7;
-  border-radius: 0px;
+    background-color: #e6e6e7;
+    border-radius: 0px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
 }
 
 .header {
