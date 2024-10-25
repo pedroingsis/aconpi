@@ -130,12 +130,21 @@ def viewFormInnovacion():
     if request.method == 'POST':
         dataForm = request.form
         try:
+
+            resultado, status_code = procesar_form_innovaciones(dataForm, request)
+            if status_code == 200:
+                flash('Innovación registrada exitosamente.', 'success')
+                return redirect(url_for('lista_innovaciones'))
+            else:
+                flash(resultado, 'error')
+
             resultado = procesar_form_innovaciones(dataForm)
             if isinstance(resultado, int) and resultado > 0:
                 flash('Innovación registrada exitosamente.', 'success')
                 return redirect(url_for('lista_innovaciones'))  # Reemplaza 'success_page' con la ruta adecuada
             else:
                 flash('No se pudo registrar la innovación.', 'error')
+                
         except Exception as e:
             flash(f'Error al registrar la innovación: {e}', 'error')
     
@@ -159,7 +168,11 @@ def detalleInnovacion(id_innovacion=None):
             if request.method == 'POST':
                 # Procesar los datos del formulario
                 titulo_idea = request.form['titulo_idea']
+
+                fecha_inicio = request.form['fecha_inicio'] or None
+
                 fecha_inicio = request.form['fecha_inicio']
+
                 descripcion_idea = request.form['descripcion_idea']
                 espacio_problema = request.form['espacio_problema']
                 aspecto = request.form['aspecto']
@@ -168,11 +181,24 @@ def detalleInnovacion(id_innovacion=None):
                 diseno = request.form['diseno']
                 kim = request.form['kim']
                 implementacion = request.form['implementacion']
+
+                fecha_plazo = request.form['fecha_plazo'] or None
+                evaluacion = request.form['evaluacion']
+                aprender_planear = request.form['aprender_planear']
+                ajustes = request.form['ajustes']
+                fecha_fin = request.form['fecha_fin'] or None
+
+                # Convertir fechas vacías a None
+                fecha_inicio = fecha_inicio.strip() if fecha_inicio and fecha_inicio.strip() else None
+                fecha_plazo = fecha_plazo.strip() if fecha_plazo and fecha_plazo.strip() else None
+                fecha_fin = fecha_fin.strip() if fecha_fin and fecha_fin.strip() else None
+
                 fecha_plazo = request.form['fecha_plazo']
                 evaluacion = request.form['evaluacion']
                 aprender_planear = request.form['aprender_planear']
                 ajustes = request.form['ajustes']
                 fecha_fin = request.form['fecha_fin']
+
                 # Actualizar la innovación en la base de datos
                 resultado = actualizar_innovacionBD(
                     id_innovacion,
@@ -192,16 +218,54 @@ def detalleInnovacion(id_innovacion=None):
                     ajustes,
                     fecha_fin
                 )
+
+
+                # Procesar nuevos documentos cargados
+                print(f"Archivos en request.files: {request.files}")  # Depuración
+                if 'nuevos_documentos' in request.files:
+                    documentos_pdf = request.files.getlist('nuevos_documentos')
+                    print(f"Cantidad de archivos subidos: {len(documentos_pdf)}")  # Depuración
+                    for documento in documentos_pdf:
+                        if documento and allowed_file(documento.filename):
+                            filename = secure_filename(documento.filename)
+                            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                            filename_with_timestamp = f"{timestamp}_{filename}"
+                            file_path = os.path.join(upload_dir, filename_with_timestamp)
+                            documento.save(file_path)
+                            print(f"Archivo guardado en: {file_path}")  # Depuración
+
+                            # Insertar información del archivo en la base de datos
+                            with connectionBD() as conexion_MySQLdb:
+                                with conexion_MySQLdb.cursor() as cursor:
+                                    sql_documento = ("INSERT INTO tbl_doc_innovacion "
+                                                     "(id_innovacion, nombre_documento, usuario_registro) "
+                                                     "VALUES (%s, %s, %s)")
+                                    valores_documento = (id_innovacion, filename_with_timestamp, session['name_surname'])
+                                    print(f"Valores a insertar en tbl_doc_innovacion: {valores_documento}")  # Depuración
+                                    cursor.execute(sql_documento, valores_documento)
+                                    conexion_MySQLdb.commit()
+                        else:
+                            print(f"Archivo no permitido o inválido: {documento.filename}")
+
+
                 if resultado:
                     flash('Innovación actualizada correctamente.', 'success')
                 else:
                     flash('Ocurrió un error al actualizar la innovación.', 'error')
+                    
+                # Obtener los detalles y documentos actualizados
+                detalle_innovacion = sql_detalles_innovacionesBD(id_innovacion) or []
+                documentos = obtener_documentos_innovacion(id_innovacion)
+                return render_template('public/innovacion/detalles_innovacion.html', detalle_innovacion=detalle_innovacion, documentos=documentos)
+            else:
+                detalle_innovacion = sql_detalles_innovacionesBD(id_innovacion) or []
+                documentos = obtener_documentos_innovacion(id_innovacion)
+                return render_template('public/innovacion/detalles_innovacion.html', detalle_innovacion=detalle_innovacion, documentos=documentos)
+
                 # Obtener los detalles actualizados
                 detalle_innovacion = sql_detalles_innovacionesBD(id_innovacion) or []
                 return render_template('public/innovacion/detalles_innovacion.html', detalle_innovacion=detalle_innovacion)
-            else:
-                detalle_innovacion = sql_detalles_innovacionesBD(id_innovacion) or []
-                return render_template('public/innovacion/detalles_innovacion.html', detalle_innovacion=detalle_innovacion)
+
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))

@@ -26,7 +26,7 @@
   <div class="row justify-content-center mb-1">
     <div class="col-md-10">
       <!-- Inicio del formulario -->
-      <form method="POST" action="">
+      <form method="POST" action="" enctype="multipart/form-data">
         <div class="card-body">
           <div class="row">
             <div class="col-md-3">
@@ -116,7 +116,8 @@
               <label for="fecha_plazo" class="form-label fw-bold text-primary">
                 Fecha plazo de implementación:
               </label>
-              <input type="date" class="form-control" name="fecha_plazo" value="{{ detalle_innovacion.fecha_plazo }}" required>
+
+              <input type="date" class="form-control" name="fecha_plazo" value="{{ detalle_innovacion.fecha_plazo }}">
             </div>
           </div>
           <div class="row mt-4">
@@ -144,7 +145,7 @@
               <label for="fecha_fin" class="form-label fw-bold text-primary">
                 Fecha Terminación del proceso:
               </label>
-              <input type="date" class="form-control" name="fecha_fin" value="{{ detalle_innovacion.fecha_fin }}" required>
+              <input type="date" class="form-control" name="fecha_fin" value="{{ detalle_innovacion.fecha_fin }}">
             </div> 
           </div>
           <div class="row mt-4">         
@@ -159,6 +160,37 @@
                 Registrado por
               </label>
               <input type="text" class="form-control" name="usuario_registro" value="{{ detalle_innovacion.usuario_registro }}" readonly>
+            </div>
+            <div class="row mt-4">
+              <div class="col-md-4">
+                <label for="documentos_actuales" class="form-label fw-bold text-primary">
+                  Documentos Actuales:
+                </label>
+                <ul>
+                  {% for documento in documentos %}
+                    <li>
+                      <a href="{{ url_for('uploaded_file', filename=documento.nombre_documento) }}" target="_blank">
+                        Ver {{ documento.nombre_documento }}
+                      </a>
+                    </li>
+                  {% else %}
+                    <p>No hay archivos adjuntos.</p>
+                  {% endfor %}
+                </ul>
+              </div>          
+            <!-- Campo para cargar nuevos documentos -->
+              <div class="col-md-8">
+                <label for="nuevos_documentos" class="form-label fw-bold text-primary">
+                  Cargar Nuevos Documentos (PDF):
+                </label>
+                <input
+                  class="form-control"
+                  type="file"
+                  name="nuevos_documentos"
+                  id="nuevos_documentos"
+                  accept="application/pdf"
+                  multiple />
+              </div>         
             </div>               
           </div>
           <div class="row mt-4">

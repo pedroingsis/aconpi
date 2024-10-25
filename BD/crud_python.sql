@@ -66,6 +66,16 @@ CREATE TABLE `tbl_documentos` (
 
 
 
+CREATE TABLE `tbl_documentos_innovacion` (
+  `id_documento` int NOT NULL AUTO_INCREMENT,
+  `id_innovacion` int ,
+  `nombre_documento` varchar(100) NOT NULL,
+  `fecha_registro` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `usuario_registro` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id_documento`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 CREATE TABLE `tbl_kim` (
   `id_kim` int NOT NULL,
   `nombre_kim` varchar(100) NOT NULL,
@@ -77,4 +87,7 @@ INSERT INTO `tbl_kim` (`id_kim`, `nombre_kim`, `descripcion_kim`) VALUES
 (1, 'Mejora', 'Automatización de procesos operativos, generación de alertas y reportes estratégicos para las partes interesadas'),
 (2, 'Invención', 'Desarrollar un artefacto que permita centralizar los datos dispersos en el servidor de archivos'),
 (3, 'Explotación', 'Uso apropiado del CRM, paquete contable, inteligencia de negocios e inteligencia artificial'),
+(4, 'Exaptación', 'Innovación limitada para el uso del CRM y seguimiento a proyectos de TI');
+
+
 (4, 'Exaptación', 'Innovación limitada para el uso del CRM y seguimiento a proyectos de TI');

@@ -17,6 +17,7 @@ import openpyxl  # Para generar el excel
 from flask import send_file,session
 
 
+
 # Lista de Usuarios creados
 def lista_usuariosBD():
     try:
@@ -223,6 +224,9 @@ def buscarContratoUnico(id):
         print(f"Ocurrió un error en def buscarContratoUnico: {e}")
         return []
     
+import os
+from werkzeug.utils import secure_filename
+
 def procesar_actualizacion_contrato(data):
     try:
         with connectionBD() as conexion_MySQLdb:
@@ -234,6 +238,8 @@ def procesar_actualizacion_contrato(data):
                 cantidad = data.form['valor']
                 fecha_inicio = data.form['fecha_inicio'] 
                 fecha_fin = data.form['fecha_fin']             
+
+                # Actualización en la tabla de contratos
                 querySQL = """
                     UPDATE tbl_contratos
                     SET 
@@ -245,11 +251,36 @@ def procesar_actualizacion_contrato(data):
                         fecha_fin= %s
                     WHERE id_contrato = %s
                 """
-                values = (documento, razon_social,objeto_contractual, cantidad,fecha_inicio,fecha_fin,id_contrato)
-
+                values = (documento, razon_social, objeto_contractual, cantidad, fecha_inicio, fecha_fin, id_contrato)
                 cursor.execute(querySQL, values)
                 conexion_MySQLdb.commit()
 
+                # Procesar archivos adicionales
+                if 'nuevo_archivo' in data.files:
+                    nuevos_archivos = data.files.getlist('nuevo_archivo')
+                    print(f"Archivos subidos: {[archivo.filename for archivo in nuevos_archivos]}")
+
+                    for archivo in nuevos_archivos:
+                        if archivo and allowed_file(archivo.filename):
+                            # Agregar marca de tiempo al nombre del archivo para evitar sobrescrituras
+                            filename = secure_filename(archivo.filename)
+                            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                            filename_with_timestamp = f"{timestamp}_{filename}"
+
+                            # Guardar el archivo en el servidor
+                            file_path = os.path.join(upload_dir, filename_with_timestamp)
+                            archivo.save(file_path)
+                            print(f"Archivo guardado en: {file_path}")
+
+                            # Insertar información del archivo en tbl_documentos
+                            queryArchivo = """
+                                INSERT INTO tbl_documentos (id_contrato, nombre_documento, usuario_registro)
+                                VALUES (%s, %s, %s)
+                            """
+                            valores_documento = (id_contrato, filename_with_timestamp, session['name_surname'])
+                            cursor.execute(queryArchivo, valores_documento)
+
+                conexion_MySQLdb.commit()
         return cursor.rowcount or []
     except Exception as e:
         print(f"Ocurrió un error en procesar_actualizar_contrato: {e}")
@@ -269,8 +300,23 @@ def eliminarContrato(id_contrato):
         print(f"Error en eliminar el contrato : {e}")
         return []
  
- 
-def procesar_form_innovaciones(dataForm):
+
+# Ruta de almacenamiento de archivos PDF
+basepath = os.path.abspath(os.path.dirname(__file__))
+upload_dir = os.path.join(basepath, 'static', 'upload_folder')
+
+# Asegurarse de que la carpeta existe
+if not os.path.exists(upload_dir):
+    os.makedirs(upload_dir)
+
+ALLOWED_EXTENSIONS = {'pdf'}
+
+def allowed_file(filename):
+    """Verifica si el archivo es PDF."""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def procesar_form_innovaciones(dataForm, request):
     try:
         with connectionBD() as conexion_MySQLdb:
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
@@ -338,16 +384,50 @@ def procesar_form_innovaciones(dataForm):
                 print("Tupla de valores:", valores)
 
                 cursor.execute(sql, valores)
+                conexion_MySQLdb.commit()
+                id_innovacion = cursor.lastrowid  # Obtenemos el id de la innovación recién insertada
+                print(f"Innovación insertada con id {id_innovacion}")
+
+                # Procesar los archivos PDF subidos
+                if 'documentos_pdf' in request.files:
+                    documentos_pdf = request.files.getlist('documentos_pdf')
+                    if documentos_pdf:
+                        print(f"Cantidad de archivos subidos: {len(documentos_pdf)}")  # Depuración
+                        print(f"Archivos subidos: {[doc.filename for doc in documentos_pdf]}")  # Detalle de archivos
+
+                        for documento in documentos_pdf:
+                            if documento and allowed_file(documento.filename):
+                                print(f"Archivo válido: {documento.filename}")  # Depuración
+                                # Agregar marca de tiempo al nombre del archivo para evitar sobrescrituras
+                                filename = secure_filename(documento.filename)
+                                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                                filename_with_timestamp = f"{timestamp}_{filename}"
+
+                                # Guardar el archivo en el servidor
+                                file_path = os.path.join(upload_dir, filename_with_timestamp)
+                                documento.save(file_path)
+                                print(f"Archivo guardado en: {file_path}")
+
+                                # Insertar información del archivo en tbl_doc_innovacion
+                                sql_documento = ("INSERT INTO tbl_doc_innovacion "
+                                                 "(id_innovacion, nombre_documento, usuario_registro) "
+                                                 "VALUES (%s, %s, %s)")
+                                valores_documento = (id_innovacion, filename_with_timestamp, session['name_surname'])
+                                print(f"Valores a insertar en tbl_doc_innovacion: {valores_documento}")  # Depuración
+                                cursor.execute(sql_documento, valores_documento)
+                            else:
+                                print(f"Archivo no permitido o inválido: {documento.filename}")
+                    else:
+                        print("No se recibieron archivos en el campo 'documentos_pdf'.")
+                else:
+                    print("No se encontró el campo 'documentos_pdf' en la solicitud.")
 
                 conexion_MySQLdb.commit()
-                resultado_insert = cursor.rowcount
-                print("Inserción completada con resultado:", resultado_insert)
-                return resultado_insert
+                return "Registro exitoso", 200
 
     except Exception as e:
-        print(f'Error en procesar_form_innovaciones: {e}')
-        raise  # Para que Flask muestre el error en la consola y/o navegador
-
+        print(f"Error en procesar_form_innovaciones: {str(e)}")
+        return f'Se produjo un error en procesar_form_innovaciones: {str(e)}', 500
 
 def obtener_id_innovacion():
     try:
@@ -508,6 +588,23 @@ def actualizar_innovacionBD(
     except Exception as e:
         print(f"Error al actualizar la innovación: {e}")
         return False
+
+
+def obtener_documentos_innovacion(id_innovacion):
+    try:
+        with connectionBD() as conexion_MySQLdb:
+            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                querySQL = """
+                    SELECT nombre_documento
+                    FROM tbl_doc_innovacion
+                    WHERE id_innovacion = %s
+                """
+                cursor.execute(querySQL, (id_innovacion,))
+                documentos = cursor.fetchall()
+        return documentos
+    except Exception as e:
+        print(f"Error al obtener documentos: {e}")
+        return []
 
 
 # Eliminar Innovación
