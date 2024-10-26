@@ -316,12 +316,26 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+# Ruta de almacenamiento de archivos PDF
+basepath = os.path.abspath(os.path.dirname(__file__))
+upload_dir = os.path.join(basepath, 'static', 'upload_folder')
+
+# Asegurarse de que la carpeta existe
+if not os.path.exists(upload_dir):
+    os.makedirs(upload_dir)
+
+ALLOWED_EXTENSIONS = {'pdf'}
+
+def allowed_file(filename):
+    """Verifica si el archivo es PDF."""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 def procesar_form_innovaciones(dataForm, request):
     try:
         with connectionBD() as conexion_MySQLdb:
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
 
-                sql = ("INSERT INTO tbl_innovacion (titulo_idea, fecha_inicio, descripcion_idea, espacio_problema, aspecto, roles, estrategias, diseno, id_kim, implementacion, fecha_plazo, evaluacion, aprender_planear, ajustes, fecha_fin, usuario_registro) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+                sql = ("INSERT INTO tbl_innovacion (titulo_idea, fecha_inicio, descripcion_idea, espacio_problema, aspecto, roles, diseno, id_kim, implementacion, fecha_plazo, evaluacion, aprender_planear, ajustes, fecha_fin, usuario_registro) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
                 # Obtener valores del formulario
                 titulo = dataForm.get('titulo')
@@ -330,9 +344,8 @@ def procesar_form_innovaciones(dataForm, request):
                 problema = dataForm.get('problema')
                 afecta = dataForm.get('afecta')
                 definir_role = dataForm.get('definir_role')
-                estrategias = dataForm.get('estrategias')
                 diseno = dataForm.get('diseno')
-                id_kim = dataForm.get('kim')  # Cambiado a 'id_kim'
+                id_kim = dataForm.get('kim')
                 implementacion = dataForm.get('implementacion')
                 fecha_plazo = dataForm.get('date_implementacion')
                 evaluacion = dataForm.get('evaluacion')
@@ -341,68 +354,49 @@ def procesar_form_innovaciones(dataForm, request):
                 fecha_fin = dataForm.get('date_fin')
                 usuario_registro = session.get('name_surname')
 
-                # Función para convertir cadenas vacías a None
+                # Convertir campos a None si están vacíos
                 def empty_to_none(value):
-                    if value is None:
-                        return None
-                    return value.strip() or None
+                    return value.strip() if value and value.strip() else None
 
-                # Función para convertir a entero o None
-                def empty_to_none_int(value):
-                    if value is None or value == '':
-                        return None
-                    try:
-                        return int(value)
-                    except ValueError:
-                        return None
-
-                # Convertir campos de fecha vacíos a None
                 fecha_plazo = empty_to_none(fecha_plazo)
                 fecha_fin = empty_to_none(fecha_fin)
-
-                # Convertir 'id_kim' a int o None
-                id_kim = empty_to_none_int(id_kim)
-
-                # Convertir otros campos opcionales
-                problema = empty_to_none(problema)
-                afecta = empty_to_none(afecta)
-                definir_role = empty_to_none(definir_role)
-                estrategias = empty_to_none(estrategias)
-                diseno = empty_to_none(diseno)
-                implementacion = empty_to_none(implementacion)
-                evaluacion = empty_to_none(evaluacion)
-                aprender_planear = empty_to_none(aprender_planear)
-                ajustes = empty_to_none(ajustes)
+                id_kim = int(id_kim) if id_kim else None
 
                 # Crear la tupla de valores
                 valores = (
-                    titulo,
-                    fecha_inicio,
-                    idea,
-                    problema,
-                    afecta,
-                    definir_role,
-                    estrategias,
-                    diseno,
-                    id_kim,  # Utilizando 'id_kim' en lugar de 'kim'
-                    implementacion,
-                    fecha_plazo,
-                    evaluacion,
-                    aprender_planear,
-                    ajustes,
-                    fecha_fin,
-                    usuario_registro
+                    titulo, fecha_inicio, idea, problema, afecta, definir_role, 
+                    diseno, id_kim, implementacion, fecha_plazo, evaluacion,
+                    aprender_planear, ajustes, fecha_fin, usuario_registro
                 )
 
-                print("Tupla de valores:", valores)
-
+                # Ejecutar inserción en tbl_innovacion
                 cursor.execute(sql, valores)
                 conexion_MySQLdb.commit()
-                id_innovacion = cursor.lastrowid  # Obtenemos el id de la innovación recién insertada
+                id_innovacion = cursor.lastrowid
                 print(f"Innovación insertada con id {id_innovacion}")
 
                 # Procesar los archivos PDF subidos (si los hay)
-                # ...
+                if 'documentos_pdf' in request.files:
+                    documentos_pdf = request.files.getlist('documentos_pdf')
+                    for documento in documentos_pdf:
+                        if documento and allowed_file(documento.filename):
+                            # Asegurar el nombre del archivo y agregar timestamp
+                            filename = secure_filename(documento.filename)
+                            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                            filename_with_timestamp = f"{timestamp}_{filename}"
+
+                            # Guardar archivo en el servidor
+                            file_path = os.path.join(upload_dir, filename_with_timestamp)
+                            documento.save(file_path)
+                            print(f"Archivo guardado en: {file_path}")
+
+                            # Insertar registro en tbl_documentos_innovacion
+                            sql_documento = ("INSERT INTO tbl_documentos_innovacion (id_innovacion, nombre_documento, usuario_registro) VALUES (%s, %s, %s)")
+                            valores_documento = (id_innovacion, filename_with_timestamp, usuario_registro)
+                            cursor.execute(sql_documento, valores_documento)
+                            conexion_MySQLdb.commit()
+                        else:
+                            print(f"Archivo no permitido o inválido: {documento.filename}")
 
                 return "Registro exitoso", 200
 
@@ -410,28 +404,6 @@ def procesar_form_innovaciones(dataForm, request):
         print(f"Error en procesar_form_innovaciones: {str(e)}")
         return f'Se produjo un error en procesar_form_innovaciones: {str(e)}', 500
 
-def obtener_id_innovacion():
-    try:
-        with connectionBD() as conexion_MySQLdb:
-            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
-                querySQL = ("""
-                    SELECT 
-                        DISTINCT 
-                        concat(e.nombre_empleado," ",e.apellido_empleado) as nombre_empleado,
-                        e.id_empleado
-                    FROM tbl_empleados AS e
-                    WHERE fecha_borrado IS NULL
-                    ORDER BY e.id_empleado ASC
-                    """)
-                cursor.execute(querySQL,)
-                innovacionesBD = cursor.fetchall()
-                
-                # Extraer solo los valores de id_innovacion de los diccionarios
-                id_innovaciones = [innovacion['nombre_innovacion'] for innovacion in innovacionesBD]
-        return id_innovaciones
-    except Exception as e:
-        print(f"Error en la función obtener_id_innovacion: {e}")
-        return None
     
     # Lista de Innovación
 def sql_lista_innovacionesBD():
@@ -447,7 +419,6 @@ def sql_lista_innovacionesBD():
                         `espacio_problema`,
                         `aspecto`,
                         `roles`,
-                        `estrategias`,
                         `diseno`,
                         `id_kim`,
                         `implementacion`,
@@ -482,7 +453,6 @@ def sql_detalles_innovacionesBD(id_innovacion):
                         i.espacio_problema,
                         i.aspecto,
                         i.roles,
-                        i.estrategias,
                         i.diseno,
                         i.id_kim,
                         K.nombre_kim,
@@ -514,9 +484,8 @@ def actualizar_innovacionBD(
     espacio_problema,
     aspecto,
     roles,
-    estrategias,
     diseno,
-    kim,
+    id_kim,
     implementacion,
     fecha_plazo,
     evaluacion,
@@ -536,9 +505,8 @@ def actualizar_innovacionBD(
                         espacio_problema = %s,
                         aspecto = %s,
                         roles = %s,
-                        estrategias = %s,
                         diseno = %s,
-                        kim = %s,
+                        id_kim = %s,
                         implementacion = %s,
                         fecha_plazo = %s,
                         evaluacion = %s,
@@ -554,9 +522,8 @@ def actualizar_innovacionBD(
                     espacio_problema,
                     aspecto,
                     roles,
-                    estrategias,
                     diseno,
-                    kim,
+                    id_kim,
                     implementacion,
                     fecha_plazo,
                     evaluacion,
@@ -578,7 +545,7 @@ def obtener_documentos_innovacion(id_innovacion):
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
                 querySQL = """
                     SELECT nombre_documento
-                    FROM tbl_doc_innovacion
+                    FROM tbl_documentos_innovacion
                     WHERE id_innovacion = %s
                 """
                 cursor.execute(querySQL, (id_innovacion,))

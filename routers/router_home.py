@@ -179,7 +179,6 @@ def detalleInnovacion(id_innovacion=None):
                 espacio_problema = request.form['espacio_problema']
                 aspecto = request.form['aspecto']
                 roles = request.form['roles']
-                estrategias = request.form['estrategias']
                 diseno = request.form['diseno']
                 id_kim = request.form['id_kim']
                 implementacion = request.form['implementacion']
@@ -198,7 +197,6 @@ def detalleInnovacion(id_innovacion=None):
                     espacio_problema,
                     aspecto,
                     roles,
-                    estrategias,
                     diseno,
                     id_kim,
                     implementacion,
@@ -223,9 +221,9 @@ def detalleInnovacion(id_innovacion=None):
                             # Insertar información del archivo en la base de datos
                             with connectionBD() as conexion_MySQLdb:
                                 with conexion_MySQLdb.cursor() as cursor:
-                                    sql_documento = ("INSERT INTO tbl_doc_innovacion "
-                                                     "(id_innovacion, nombre_documento, usuario_registro) "
-                                                     "VALUES (%s, %s, %s)")
+                                    sql_documento = ("INSERT INTO tbl_documentos_innovacion"
+                                                        "(id_innovacion, nombre_documento, usuario_registro) "
+                                                        "VALUES (%s, %s, %s)")
                                     valores_documento = (id_innovacion, filename_with_timestamp, session['name_surname'])
                                     cursor.execute(sql_documento, valores_documento)
                                     conexion_MySQLdb.commit()
@@ -252,7 +250,7 @@ def obtener_opciones_kim():
     try:
         with connectionBD() as conexion_MySQLdb:
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
-                querySQL = "SELECT id_kim, nombre_kim FROM tbl_kim"
+                querySQL = "SELECT id_kim, nombre_kim, descripcion_kim FROM tbl_kim"
                 cursor.execute(querySQL)
                 return cursor.fetchall()
     except Exception as e:

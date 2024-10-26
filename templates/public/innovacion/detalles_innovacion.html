@@ -37,7 +37,7 @@
             </div>                
             <div class="col-md-9">
               <label for="titulo_idea" class="form-label fw-bold text-primary">
-                Título Plan de mejora e innovación Digital:
+                Nombre del proyecto ID:
               </label>
               <input type="text" class="form-control" name="titulo_idea" value="{{ detalle_innovacion.titulo_idea }}" required>
             </div>                   
@@ -45,13 +45,13 @@
           <div class="row mt-4">
             <div class="col-md-4">
               <label for="fecha_inicio" class="form-label fw-bold text-primary">
-                Fecha de Inicio de ID:
+                Fecha de Inicio:
               </label>
               <input type="date" class="form-control" name="fecha_inicio" value="{{ detalle_innovacion.fecha_inicio }}" required>
             </div>
             <div class="col-md-8">
               <label for="descripcion_idea" class="form-label fw-bold text-primary">
-                Descripción de la innovación digital:
+                Resumen:
               </label>
               <textarea class="form-control" name="descripcion_idea" rows="2" required>{{ detalle_innovacion.descripcion_idea }}</textarea>
             </div>
@@ -59,39 +59,24 @@
           <div class="row mt-4">
             <div class="col-md-6">
               <label for="espacio_problema" class="form-label fw-bold text-primary">
-                Espacio del Problema:
+                Contexto del negocio:
               </label>
-              <textarea class="form-control" name="espacio_problema" rows="2" required>{{ detalle_innovacion.espacio_problema }}</textarea>
+              <textarea class="form-control" name="espacio_problema" rows="2">{{ detalle_innovacion.espacio_problema }}</textarea>
             </div>
             <div class="col-md-6">
               <label for="aspecto" class="form-label fw-bold text-primary">
-                Aspecto del negocio que afecta:
+                Entorno competitivo:
               </label>
-              <textarea class="form-control" name="aspecto" rows="2" required>{{ detalle_innovacion.aspecto }}</textarea>
+              <textarea class="form-control" name="aspecto" rows="2">{{ detalle_innovacion.aspecto }}</textarea>
             </div>
           </div>
           <div class="row mt-4">
             <div class="col-md-6">
               <label for="roles" class="form-label fw-bold text-primary">
-                1. Definir roles de la empresa:
+                1. Definir roles del equipo de trabajo:
               </label>
-              <textarea class="form-control" name="roles" rows="2" required>{{ detalle_innovacion.roles }}</textarea>
+              <textarea class="form-control" name="roles" rows="2">{{ detalle_innovacion.roles }}</textarea>
             </div>
-            <div class="col-md-6">
-              <label for="estrategias" class="form-label fw-bold text-primary">
-                2. Selección de Estrategias:
-              </label>
-              <textarea class="form-control" name="estrategias" rows="2" required>{{ detalle_innovacion.estrategias }}</textarea>
-            </div>
-          </div>
-          <div class="row mt-4">
-            <div class="col-md-12">
-              <label for="diseno" class="form-label fw-bold text-primary">
-                3. Diseño de la innovación digital a implemntar:
-              </label>
-              <textarea class="form-control" name="diseno" rows="2" required>{{ detalle_innovacion.diseno }}</textarea>
-            </div>
-            <!-- Campo 'kim' corregido -->
             <div class="row mt-4">
               <div class="col-md-6">
                 <label for="id_kim" class="form-label fw-bold text-primary">
@@ -100,18 +85,29 @@
                 <select class="form-control" name="id_kim" id="id_kim">
                   <option value="">Seleccione una opción</option>
                   {% for kim_option in kim_options %}
-                    <option value="{{ kim_option.id_kim }}" {% if detalle_innovacion.id_kim == kim_option.id_kim %}selected{% endif %}>
-                      {{ kim_option.nombre_kim }}
+                    <option value="{{ kim_option.id_kim }}" 
+                      {% if detalle_innovacion.id_kim == kim_option.id_kim %}selected{% endif %}>
+                      {{ kim_option['nombre_kim'] }} - {{ kim_option['descripcion_kim'] }}
                     </option>
                   {% endfor %}
                 </select>
               </div>
+            </div>
+          <div class="row mt-4">
+            <div class="col-md-12">
+              <label for="diseno" class="form-label fw-bold text-primary">
+                3. Diseño del proyecto de innovación digital:
+              </label>
+              <textarea class="form-control" name="diseno" rows="2">{{ detalle_innovacion.diseno }}</textarea>
+            </div>
+            <!-- Campo 'kim' corregido -->
+            
           <div class="row mt-4">
             <div class="col-md-12">
               <label for="implementacion" class="form-label fw-bold text-primary">
-                4. Implementación y Demostración:
+                4. Implementación y demostración:
               </label>
-              <textarea class="form-control" name="implementacion" rows="2" required>{{ detalle_innovacion.implementacion }}</textarea>
+              <textarea class="form-control" name="implementacion" rows="2">{{ detalle_innovacion.implementacion }}</textarea>
             </div>
           </div>
           <div class="row mt-4">
@@ -126,27 +122,27 @@
           <div class="row mt-4">
             <div class="col-md-8">
               <label for="evaluacion" class="form-label fw-bold text-primary">
-                5. Evaluación (Encuesta de percepción de la idea de Innovación digital):
+                5. Resultados de la encuesta de aceptación:
               </label>
-              <textarea class="form-control" name="evaluacion" rows="2" required>{{ detalle_innovacion.evaluacion }}</textarea>
+              <textarea class="form-control" name="evaluacion" rows="2">{{ detalle_innovacion.evaluacion }}</textarea>
             </div>
             <div class="col-md-4">
               <label for="aprender_planear" class="form-label fw-bold text-primary">
-                6. Diseñar, aprender y planear:
+                6. Planear nuevos proyectos de innovación digital:
               </label>
-              <textarea class="form-control" name="aprender_planear" rows="2" required>{{ detalle_innovacion.aprender_planear }}</textarea>
+              <textarea class="form-control" name="aprender_planear" rows="2">{{ detalle_innovacion.aprender_planear }}</textarea>
             </div>
           </div>
           <div class="row mt-4">
             <div class="col-md-8">
               <label for="ajustes" class="form-label fw-bold text-primary">
-                Base de conocimiento (ajustes necesarios):
+                Base de conocimiento (ajustes necesarios): 
               </label>
-              <textarea class="form-control" name="ajustes" rows="2" required>{{ detalle_innovacion.ajustes }}</textarea>
+              <textarea class="form-control" name="ajustes" rows="2">{{ detalle_innovacion.ajustes }}</textarea>
             </div>
             <div class="col-md-4">
               <label for="fecha_fin" class="form-label fw-bold text-primary">
-                Fecha Terminación del proceso:
+                Fecha terminación proyecto ID:
               </label>
               <input type="date" class="form-control" name="fecha_fin" value="{{ detalle_innovacion.fecha_fin }}">
             </div> 
@@ -165,7 +161,7 @@
               <input type="text" class="form-control" name="usuario_registro" value="{{ detalle_innovacion.usuario_registro }}" readonly>
             </div>
             <div class="row mt-4">
-              <div class="col-md-4">
+              <div class="col-md-6">
                 <label for="documentos_actuales" class="form-label fw-bold text-primary">
                   Documentos Actuales:
                 </label>
@@ -182,7 +178,7 @@
                 </ul>
               </div>          
             <!-- Campo para cargar nuevos documentos -->
-              <div class="col-md-8">
+              <div class="col-md-6">
                 <label for="nuevos_documentos" class="form-label fw-bold text-primary">
                   Cargar Nuevos Documentos (PDF):
                 </label>
