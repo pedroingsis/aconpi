@@ -321,7 +321,7 @@ def procesar_form_innovaciones(dataForm, request):
         with connectionBD() as conexion_MySQLdb:
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
 
-                sql = ("INSERT INTO tbl_innovacion (titulo_idea, fecha_inicio, descripcion_idea, espacio_problema, aspecto, roles, estrategias, diseno, kim, implementacion, fecha_plazo, evaluacion, aprender_planear, ajustes, fecha_fin, usuario_registro) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+                sql = ("INSERT INTO tbl_innovacion (titulo_idea, fecha_inicio, descripcion_idea, espacio_problema, aspecto, roles, estrategias, diseno, id_kim, implementacion, fecha_plazo, evaluacion, aprender_planear, ajustes, fecha_fin, usuario_registro) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
                 # Obtener valores del formulario
                 titulo = dataForm.get('titulo')
@@ -332,7 +332,7 @@ def procesar_form_innovaciones(dataForm, request):
                 definir_role = dataForm.get('definir_role')
                 estrategias = dataForm.get('estrategias')
                 diseno = dataForm.get('diseno')
-                kim = dataForm.get('kim')
+                id_kim = dataForm.get('kim')  # Cambiado a 'id_kim'
                 implementacion = dataForm.get('implementacion')
                 fecha_plazo = dataForm.get('date_implementacion')
                 evaluacion = dataForm.get('evaluacion')
@@ -343,19 +343,32 @@ def procesar_form_innovaciones(dataForm, request):
 
                 # Función para convertir cadenas vacías a None
                 def empty_to_none(value):
-                    return value if value.strip() else None
+                    if value is None:
+                        return None
+                    return value.strip() or None
+
+                # Función para convertir a entero o None
+                def empty_to_none_int(value):
+                    if value is None or value == '':
+                        return None
+                    try:
+                        return int(value)
+                    except ValueError:
+                        return None
 
                 # Convertir campos de fecha vacíos a None
                 fecha_plazo = empty_to_none(fecha_plazo)
                 fecha_fin = empty_to_none(fecha_fin)
 
-                # También puedes convertir otros campos opcionales si es necesario
+                # Convertir 'id_kim' a int o None
+                id_kim = empty_to_none_int(id_kim)
+
+                # Convertir otros campos opcionales
                 problema = empty_to_none(problema)
                 afecta = empty_to_none(afecta)
                 definir_role = empty_to_none(definir_role)
                 estrategias = empty_to_none(estrategias)
                 diseno = empty_to_none(diseno)
-                kim = empty_to_none(kim)
                 implementacion = empty_to_none(implementacion)
                 evaluacion = empty_to_none(evaluacion)
                 aprender_planear = empty_to_none(aprender_planear)
@@ -371,7 +384,7 @@ def procesar_form_innovaciones(dataForm, request):
                     definir_role,
                     estrategias,
                     diseno,
-                    kim,
+                    id_kim,  # Utilizando 'id_kim' en lugar de 'kim'
                     implementacion,
                     fecha_plazo,
                     evaluacion,
@@ -388,41 +401,9 @@ def procesar_form_innovaciones(dataForm, request):
                 id_innovacion = cursor.lastrowid  # Obtenemos el id de la innovación recién insertada
                 print(f"Innovación insertada con id {id_innovacion}")
 
-                # Procesar los archivos PDF subidos
-                if 'documentos_pdf' in request.files:
-                    documentos_pdf = request.files.getlist('documentos_pdf')
-                    if documentos_pdf:
-                        print(f"Cantidad de archivos subidos: {len(documentos_pdf)}")  # Depuración
-                        print(f"Archivos subidos: {[doc.filename for doc in documentos_pdf]}")  # Detalle de archivos
+                # Procesar los archivos PDF subidos (si los hay)
+                # ...
 
-                        for documento in documentos_pdf:
-                            if documento and allowed_file(documento.filename):
-                                print(f"Archivo válido: {documento.filename}")  # Depuración
-                                # Agregar marca de tiempo al nombre del archivo para evitar sobrescrituras
-                                filename = secure_filename(documento.filename)
-                                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-                                filename_with_timestamp = f"{timestamp}_{filename}"
-
-                                # Guardar el archivo en el servidor
-                                file_path = os.path.join(upload_dir, filename_with_timestamp)
-                                documento.save(file_path)
-                                print(f"Archivo guardado en: {file_path}")
-
-                                # Insertar información del archivo en tbl_doc_innovacion
-                                sql_documento = ("INSERT INTO tbl_doc_innovacion "
-                                                 "(id_innovacion, nombre_documento, usuario_registro) "
-                                                 "VALUES (%s, %s, %s)")
-                                valores_documento = (id_innovacion, filename_with_timestamp, session['name_surname'])
-                                print(f"Valores a insertar en tbl_doc_innovacion: {valores_documento}")  # Depuración
-                                cursor.execute(sql_documento, valores_documento)
-                            else:
-                                print(f"Archivo no permitido o inválido: {documento.filename}")
-                    else:
-                        print("No se recibieron archivos en el campo 'documentos_pdf'.")
-                else:
-                    print("No se encontró el campo 'documentos_pdf' en la solicitud.")
-
-                conexion_MySQLdb.commit()
                 return "Registro exitoso", 200
 
     except Exception as e:
@@ -468,7 +449,7 @@ def sql_lista_innovacionesBD():
                         `roles`,
                         `estrategias`,
                         `diseno`,
-                        `kim`,
+                        `id_kim`,
                         `implementacion`,
                         `fecha_plazo`,
                         `evaluacion`,
@@ -494,34 +475,35 @@ def sql_detalles_innovacionesBD(id_innovacion):
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
                 querySQL = ("""
                     SELECT 
-                        `id_innovacion`,
-                        `titulo_idea`,
-                        `fecha_inicio`,
-                        `descripcion_idea` ,
-                        `espacio_problema`,
-                        `aspecto`,
-                        `roles`,
-                        `estrategias`,
-                        `diseno`,
-                        `kim`,
-                        `implementacion`,
-                        `fecha_plazo`,
-                        `evaluacion`,
-                        `aprender_planear`,
-                        `ajustes`,
-                        `fecha_fin`,
-                        DATE_FORMAT(fecha_registro, '%Y-%m-%d %h:%i %p') AS fecha_registro,
-                        usuario_registro
-                    FROM bd_contratos.tbl_innovacion
-                    WHERE id_innovacion =%s
-                    """)
+                        i.id_innovacion,
+                        i.titulo_idea,
+                        i.fecha_inicio,
+                        i.descripcion_idea,
+                        i.espacio_problema,
+                        i.aspecto,
+                        i.roles,
+                        i.estrategias,
+                        i.diseno,
+                        i.id_kim,
+                        K.nombre_kim,
+                        i.implementacion,
+                        i.fecha_plazo,
+                        i.evaluacion,
+                        i.aprender_planear,
+                        i.ajustes,
+                        i.fecha_fin,
+                        DATE_FORMAT(i.fecha_registro, '%Y-%m-%d %h:%i %p') AS fecha_registro,
+                        i.usuario_registro
+                    FROM bd_contratos.tbl_innovacion AS i
+                    LEFT JOIN tbl_kim AS K ON K.id_kim = i.id_kim
+                    WHERE i.id_innovacion = %s
+                """)
                 cursor.execute(querySQL, (id_innovacion,))
                 innovacionBD = cursor.fetchone()
                 print(innovacionBD) 
         return innovacionBD
     except Exception as e:
-        print(
-            f"Errro en la función sql_detalles_innovacionesBD: {e}")
+        print(f"Error en la función sql_detalles_innovacionesBD: {e}")
         return None
     
 def actualizar_innovacionBD(

@@ -118,12 +118,16 @@
             <div class="col-md-12">
               <br />
               <div class="form-group">
-                <label for="kim" class="form-label fw-bold text-primary">2. Seleccione la estrategia de la matriz del conocimiento (KIM):
-                  <i class="fas fa-question-circle ms-2" data-toggle="tooltip" data-placement="top" title="Escoja la categoría según impacto y novedad en el contexto de la empresa, Invención, Mejora, Exaptación o Explotación"></i>
+                <label for="kim" class="form-label fw-bold text-primary">
+                  2. Seleccione la estrategia de la matriz del conocimiento (KIM):
+                  <i class="fas fa-question-circle ms-2" data-toggle="tooltip" data-placement="top"
+                     title="Escoja la categoría según impacto y novedad en el contexto de la empresa, Invención, Mejora, Exaptación o Explotación"></i>
                 </label>
                 <select class="form-control" name="kim" id="kim">
                   <option value="">Seleccione una opción</option>
-                  <!-- Opciones generadas dinámicamente -->
+                  {% for kim_option in kim_options %}
+                    <option value="{{ kim_option['id_kim'] }}">{{ kim_option['nombre_kim'] }} - {{ kim_option['descripcion_kim'] }}</option>
+                  {% endfor %}
                 </select>
               </div>
             </div>

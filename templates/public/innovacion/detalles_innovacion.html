@@ -93,16 +93,19 @@
             </div>
             <!-- Campo 'kim' corregido -->
             <div class="row mt-4">
-            <div class="col-md-6">
-              <label for="kim" class="form-label fw-bold text-primary">
-                Estrategia de la matriz del conocimiento (KIM):
-              </label>
-              <!-- Si deseas que sea un campo de selección, puedes usar un select -->
-              <!-- Aquí lo pondremos como un campo de texto editable -->
-              <input type="text" class="form-control" name="kim" value="{{ detalle_innovacion.kim }}" required>
-            </div>
-          </div>
-          </div>
+              <div class="col-md-6">
+                <label for="id_kim" class="form-label fw-bold text-primary">
+                  Estrategia de la matriz del conocimiento (KIM):
+                </label>
+                <select class="form-control" name="id_kim" id="id_kim">
+                  <option value="">Seleccione una opción</option>
+                  {% for kim_option in kim_options %}
+                    <option value="{{ kim_option.id_kim }}" {% if detalle_innovacion.id_kim == kim_option.id_kim %}selected{% endif %}>
+                      {{ kim_option.nombre_kim }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
           <div class="row mt-4">
             <div class="col-md-12">
               <label for="implementacion" class="form-label fw-bold text-primary">

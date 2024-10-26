@@ -32,7 +32,7 @@ CREATE TABLE `tbl_innovacion` (
   `roles` varchar(500) DEFAULT NULL,
   `estrategias` varchar(500) DEFAULT NULL,
   `diseno` varchar(500) DEFAULT NULL,
-  `kim` varchar(500) DEFAULT NULL,
+  `id_kim` int DEFAULT NULL,
   `implementacion` varchar(500) DEFAULT NULL,
   `fecha_plazo` date DEFAULT NULL,
   `evaluacion` varchar(500) DEFAULT NULL,
