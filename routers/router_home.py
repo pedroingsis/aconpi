@@ -31,20 +31,19 @@ def borrarUsuario(id):
 def viewFormContratos():
     try:
         if request.method == 'POST':
-            print(request.form)  # Imprimir los datos del formulario para depuración
-            print(request.files)  # Imprimir los archivos subidos para depuración
-
             # Procesar el formulario y archivos
             resultado, status_code = procesar_form_contratos(request.form, request)
             if status_code == 200:
                 flash('Registro exitoso', 'success')
-                return redirect(url_for('lista_contratos'))  # Redirigir a lista_contratos después de éxito
+                return redirect(url_for('lista_contratos'))
             else:
                 flash(resultado, 'error')
                 return redirect(url_for('viewFormContratos'))
         else:
             if 'conectado' in session:
-                return render_template('public/contratos/form_contratos.html')
+                # Obtener los proveedores para el desplegable
+                proveedores = obtener_proveedores()
+                return render_template('public/contratos/form_contratos.html', proveedores=proveedores)
             else:
                 flash('Primero debes iniciar sesión.', 'error')
                 return redirect(url_for('inicio'))

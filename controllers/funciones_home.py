@@ -128,6 +128,19 @@ def procesar_form_contratos(dataForm, request):
         return f'Se produjo un error en procesar_form_contratos: {str(e)}', 500
     
     
+def obtener_proveedores():
+    try:
+        with connectionBD() as conexion_MySQLdb:
+            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                querySQL = "SELECT id, documento_proveedor, razon_social FROM tbl_proveedor"
+                cursor.execute(querySQL)
+                return cursor.fetchall()
+    except Exception as e:
+        print(f"Error al obtener proveedores: {e}")
+        return []    
+
+    
+    
 def sql_lista_contratosBD(search_term=''):
     try:
         with connectionBD() as conexion_MySQLdb:

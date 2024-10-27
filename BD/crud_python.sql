@@ -90,4 +90,9 @@ INSERT INTO `tbl_kim` (`id_kim`, `nombre_kim`, `descripcion_kim`) VALUES
 (4, 'Exaptación', 'Innovación limitada para el uso del CRM y seguimiento a proyectos de TI');
 
 
-(4, 'Exaptación', 'Innovación limitada para el uso del CRM y seguimiento a proyectos de TI');
+CREATE TABLE `tbl_proveedor` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `documento_proveedor` int NOT NULL,
+  `razon_social` varchar(200) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
