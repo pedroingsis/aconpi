@@ -35,22 +35,22 @@
         </li>
         <li class="menu-item">
           <a href="{{ url_for('viewFormPercepcion') }}" class="dropdown-item">
-            <i class="bi bi-eye"></i> Registro de Encuesta
+            <i class="bi bi-eye"></i> Registrar encuesta
           </a>
         </li>
         <li class="menu-item {% if request.path == '/lista-percepcion' %} active{% endif %}">
           <a href="/lista-percepcion" class="dropdown-item">
-            <i class="bi bi-eye-fill"></i> Lista de Encuestas
+            <i class="bi bi-eye-fill"></i> Lista de encuestas
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ url_for('viewFormContratos') }}" class="dropdown-item">
-            <i class="bi bi-pass-fill"></i> Registrar Contratos
+            <i class="bi bi-pass-fill"></i> Registrar contratos
           </a>
         </li>
         <li class="menu-item">
           <a href="{{ url_for('lista_contratos') }}" class="dropdown-item">
-            <i class="bi bi-pass-fill"></i> Lista Contratos
+            <i class="bi bi-pass-fill"></i> Lista de contratos
           </a>
         </li>
       </ul>
