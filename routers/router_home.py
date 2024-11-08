@@ -256,6 +256,32 @@ def obtener_opciones_kim():
         print(f"Error al obtener opciones de KIM: {e}")
         return []
     
+
+
+
+@app.route("/reporte-innovacion/<string:id_innovacion>", methods=['GET', 'POST'])
+def reporteInnovacion(id_innovacion=None):
+    if 'conectado' in session:
+        if id_innovacion is None:
+            return redirect(url_for('inicio'))
+        else:
+            # Obtener las opciones de KIM
+            kim_options = obtener_opciones_kim()
+
+            # Obtener los detalles de la innovación y los documentos asociados
+            reporte_innovacion = sql_detalles_innovacionesBD(id_innovacion) or []
+            documentos = obtener_documentos_innovacion(id_innovacion)
+
+            return render_template('public/innovacion/innovacion_report.html',
+                reporte_innovacion=reporte_innovacion,
+                documentos=documentos,
+                kim_options=kim_options
+            )
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+    
 @app.route('/borrar-innovacion/<int:id_innovacion>', methods=['GET'])
 def borrarInnovacion(id_innovacion):
     print(f"Endpoint llamado con id_innovacion: {id_innovacion}")

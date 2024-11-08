@@ -1,0 +1,205 @@
+{% extends 'public/base_cpanel.html' %}
+<!--Cambiando el title-->
+{% block title %}AconpiExpress | Detalles de Innovación{% endblock %}
+<!---->
+{% block customCSS %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename ='assets/css/file.css') }}" />
+{% endblock %}
+
+<!--Inicio del block-->
+{% block body %}
+{% if reporte_innovacion %}
+<div class="card">
+  <div class="row justify-content-center mb-header sticky-header">
+    <div class="col-md-12">
+      <h3 class="text-center mt-5 mb-3 fw-bold">
+        <a href="/lista-de-innovaciones">
+          <i class="bi bi-arrow-left-circle"></i>
+        </a>
+        INFORMACIÓN DE PLANES DE MEJORA E INNOVACIÓN DIGITAL
+      </h3>
+      <hr />
+    </div>
+  </div>
+  <div class="row justify-content-center mb-1">
+    <div class="col-md-10">
+      <!-- Inicio del formulario -->
+      <form method="POST" action="" enctype="multipart/form-data">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-2">
+              <label for="id_innovacion" class="form-label fw-bold text-primary">
+                ID INNOVACIÓN
+              </label>
+              <input type="text" class="form-control" name="id_innovacion" value="{{ reporte_innovacion.id_innovacion }}" readonly>
+            </div>                
+            <div class="col-md-7">
+              <label for="titulo_idea" class="form-label fw-bold text-primary">
+                Nombre del proyecto ID:
+              </label>
+              <input type="text" class="form-control" name="titulo_idea" value="{{ reporte_innovacion.titulo_idea }}" readonly>
+            </div>
+            <div class="col-md-3">
+              <label for="fecha_inicio" class="form-label fw-bold text-primary">
+                Fecha de Inicio:
+              </label>
+              <input type="date" class="form-control" name="fecha_inicio" value="{{ reporte_innovacion.fecha_inicio }}" readonly >
+            </div>                  
+          </div>
+          
+          <div class="row mt-4">
+            <div class="col-md-12">
+              <label for="descripcion_idea" class="form-label fw-bold text-primary">
+                Resumen:
+              </label>
+              <textarea class="form-control" name="descripcion_idea" rows="2" readonly
+                        style="overflow-y: hidden; resize: none;"
+                        oninput="autoResize(this)">{{ reporte_innovacion.descripcion_idea }}</textarea>
+            </div>  
+          
+            <div class="col-md-12 mt-3">
+              <label for="espacio_problema" class="form-label fw-bold text-primary">
+                Contexto del negocio:
+              </label>
+              <textarea class="form-control" name="espacio_problema" rows="2" readonly
+                        style="overflow-y: hidden; resize: none;"
+                        oninput="autoResize(this)">{{ reporte_innovacion.espacio_problema }}</textarea>
+            </div>
+            <div class="col-md-12 mt-3">
+              <label for="aspecto" class="form-label fw-bold text-primary">
+                Entorno competitivo:
+              </label>
+              <textarea class="form-control" name="aspecto" rows="2" style="overflow-y: hidden; resize: none;" 
+              oninput="autoResize(this)" readonly>{{ reporte_innovacion.aspecto }}</textarea>
+            </div>
+            <div class="col-md-12 mt-3">
+              <label for="roles" class="form-label fw-bold text-primary">
+                1. Definir roles del equipo de trabajo:
+              </label>
+              <textarea class="form-control" name="roles" rows="2" style="overflow-y: hidden; resize: none;" 
+              oninput="autoResize(this)" readonly>{{ reporte_innovacion.roles }}</textarea>
+            </div>
+            <div class="col-md-12 mt-3">
+              <label for="id_kim" class="form-label fw-bold text-primary">
+                Estrategia de la matriz del conocimiento (KIM):
+              </label>
+              <input type="text" class="form-control" name="id_kim_display" id="id_kim_display" 
+                     value="{% for kim_option in kim_options %}{% if reporte_innovacion.id_kim == kim_option.id_kim %}{{ kim_option['nombre_kim'] }} - {{ kim_option['descripcion_kim'] }}{% endif %}{% endfor %}" 
+                     readonly>
+            </div>
+            <div class="col-md-12 mt-3">
+              <label for="diseno" class="form-label fw-bold text-primary">
+                3. Diseño del proyecto de innovación digital:
+              </label>
+              <textarea class="form-control" name="diseno" rows="2" style="overflow-y: hidden; resize: none;" 
+              oninput="autoResize(this)" readonly>{{ reporte_innovacion.diseno }}</textarea>
+            </div>
+            <div class="col-md-12 mt-3">
+              <label for="implementacion" class="form-label fw-bold text-primary">
+                4. Implementación y demostración:
+              </label>
+              <textarea class="form-control" name="implementacion" rows="2" style="overflow-y: hidden; resize: none;" 
+              oninput="autoResize(this)" readonly>{{ reporte_innovacion.implementacion }}</textarea>
+            </div>
+            <div class="col-md-4 mt-3">
+              <label for="fecha_plazo" class="form-label fw-bold text-primary">
+                Fecha plazo de implementación:
+              </label>
+
+              <input type="date" class="form-control" name="fecha_plazo" value="{{ reporte_innovacion.fecha_plazo }}" readonly>
+            </div>
+            <div class="col-md-12 mt-3">
+              <label for="evaluacion" class="form-label fw-bold text-primary">
+                5. Resultados de la encuesta de aceptación:
+              </label>
+              <textarea class="form-control" name="evaluacion" rows="2" style="overflow-y: hidden; resize: none;" 
+              oninput="autoResize(this)" readonly>{{ reporte_innovacion.evaluacion }}</textarea>
+            </div>
+            <div class="col-md-12 mt-3">
+              <label for="aprender_planear" class="form-label fw-bold text-primary">
+                6. Planear nuevos proyectos de innovación digital:
+              </label>
+              <textarea class="form-control" name="aprender_planear" rows="2" style="overflow-y: hidden; resize: none;" 
+              oninput="autoResize(this)" readonly>{{ reporte_innovacion.aprender_planear }}</textarea>
+            </div>
+            <div class="col-md-12 mt-3 ">
+              <label for="ajustes" class="form-label fw-bold text-primary">
+                Base de conocimiento (ajustes necesarios): 
+              </label>
+              <textarea class="form-control" name="ajustes" rows="2" style="overflow-y: hidden; resize: none;" 
+              oninput="autoResize(this)" readonly>{{ reporte_innovacion.ajustes }}</textarea>
+            </div>
+            
+            
+          </div>
+          <div class="row mt-4">
+            
+            <div class="col-md-4">
+              <label for="fecha_fin" class="form-label fw-bold text-primary">
+                Fecha terminación proyecto ID:
+              </label>
+              <input type="date" class="form-control" name="fecha_fin" value="{{ reporte_innovacion.fecha_fin }}" readonly>
+            </div>
+            <div class="col-md-3">
+              <label for="fecha_registro" class="form-label fw-bold text-primary">
+                FECHA Y HORA REGISTRO
+              </label>
+              <input type="text" class="form-control" name="fecha_registro" value="{{ reporte_innovacion.fecha_registro }}" readonly>
+            </div>           
+            <div class="col-md-3">
+              <label for="usuario_registro" class="form-label fw-bold text-primary">
+                Registrado por
+              </label>
+              <input type="text" class="form-control" name="usuario_registro" value="{{ reporte_innovacion.usuario_registro }}" readonly>
+            </div>
+          </div>
+              <div class="col-md-6 mt-3 ">
+                <label for="documentos_actuales" class="form-label fw-bold text-primary">
+                  Documentos Actuales:
+                </label>
+                <ul>
+                  {% for documento in documentos %}
+                    <li>
+                      <a href="{{ url_for('uploaded_file', filename=documento.nombre_documento) }}" target="_blank">
+                        Ver {{ documento.nombre_documento }}
+                      </a>
+                    </li>
+                  {% else %}
+                    <p>No hay archivos adjuntos.</p>
+                  {% endfor %}
+                </ul>
+              </div>        
+            </div>               
+          </div>
+        </div>
+      </form>
+      <!-- Fin del formulario -->
+    </div>
+  </div>
+</div>
+{% else %}
+<h2 class="text-center">
+  No existe la innovación 😭
+  <hr />
+</h2>
+{% endif %}
+
+<script>
+  function autoResize(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }
+
+  // Selecciona todos los textarea y aplica autoResize al cargar la página
+  document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll('textarea').forEach(textarea => {
+      autoResize(textarea);
+      textarea.addEventListener('input', () => autoResize(textarea));
+    });
+  });
+</script>
+{% endblock %}
+
+
