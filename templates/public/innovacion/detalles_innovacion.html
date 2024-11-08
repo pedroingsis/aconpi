@@ -1,214 +1,219 @@
 {% extends 'public/base_cpanel.html' %}
-<!--Cambiando el title-->
+<!-- Cambiando el título -->
 {% block title %}AconpiExpress | Detalles de Innovación{% endblock %}
-<!---->
+
 {% block customCSS %}
-<link
-  rel="stylesheet"
-  href="{{ url_for('static', filename ='assets/css/file.css') }}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/file.css') }}" />
 {% endblock %}
 
-<!--Inicio del block-->
 {% block body %}
 {% if detalle_innovacion %}
-<div class="card">
-  <div class="row justify-content-center mb-header sticky-header">
-    <div class="col-md-12">
-      <h3 class="text-center mt-5 mb-3 fw-bold">
-        <a href="/lista-de-innovaciones">
-          <i class="bi bi-arrow-left-circle"></i>
-        </a>
-        INFORMACIÓN DE PLANES DE MEJORA E INNOVACIÓN DIGITAL
-      </h3>
-      <hr />
+<div class="container">
+  <div class="card" style="padding: 20px; margin-top: 20px;">
+    <h3 class="text-center mt-5 mb-3 fw-bold">INFORMACIÓN DE PLANES DE MEJORA E INNOVACIÓN DIGITAL</h3>
+    <hr />
+
+    <!-- Formulario Multi-Paso -->
+    <form id="multi-step-form" method="POST" action="/detalles-innovacion" enctype="multipart/form-data">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#step-1" data-toggle="tab">Resumen</a></li>
+        <li><a href="#step-2" data-toggle="tab">Proyecto</a></li>
+        <li><a href="#step-3" data-toggle="tab">Evaluación</a></li>
+      </ul>
+
+      <div class="tab-content">
+  <!-- Paso 1 -->
+  <div class="tab-pane fade in active" id="step-1">
+    <div class="row">
+      <div class="col-md-2">
+        <label for="id_innovacion" class="form-label fw-bold text-primary">
+          ID INNOVACIÓN
+        </label>
+        <input type="text" class="form-control" name="id_innovacion" value="{{ detalle_innovacion.id_innovacion }}" readonly>
+      </div> 
+      <div class="col-md-6">
+        <label for="titulo_idea" class="form-label fw-bold text-primary">
+          Nombre del proyecto ID:
+        </label>
+        <input type="text" class="form-control" name="titulo_idea" value="{{ detalle_innovacion.titulo_idea }}" required>
+      </div> 
+      <div class="col-md-3">
+        <label for="fecha_inicio" class="form-label fw-bold text-primary">
+          Fecha de Inicio:
+        </label>
+        <input type="date" class="form-control" name="fecha_inicio" value="{{ detalle_innovacion.fecha_inicio }}" required>
+      </div>
+      <div class="col-md-12">
+        <br />
+         <label for="descripcion_idea" class="form-label fw-bold text-primary">
+          Resumen:
+        </label>
+        <textarea class="form-control" name="descripcion_idea" rows="2" required>{{ detalle_innovacion.descripcion_idea }}</textarea>
+      </div>
+      <div class="col-md-6">
+        <label for="espacio_problema" class="form-label fw-bold text-primary">
+          Contexto del negocio:
+        </label>
+        <textarea class="form-control" name="espacio_problema" rows="2">{{ detalle_innovacion.espacio_problema }}</textarea>
+      </div>
+      <div class="col-md-6">
+        <label for="aspecto" class="form-label fw-bold text-primary">
+          Entorno competitivo:
+        </label>
+        <textarea 
+          class="form-control" 
+          name="aspecto" 
+          rows="2" 
+          id="aspecto" 
+          oninput="autoResize(this)" 
+          style="overflow: hidden; resize: none; height: auto;"
+        >{{ detalle_innovacion.aspecto }}</textarea>
+      </div>
     </div>
   </div>
-  <div class="row justify-content-center mb-1">
-    <div class="col-md-10">
-      <!-- Inicio del formulario -->
-      <form method="POST" action="" enctype="multipart/form-data">
-        <div class="card-body">
-          <div class="row">
-            <div class="col-md-3">
-              <label for="id_innovacion" class="form-label fw-bold text-primary">
-                ID INNOVACIÓN
-              </label>
-              <input type="text" class="form-control" name="id_innovacion" value="{{ detalle_innovacion.id_innovacion }}" readonly>
-            </div>                
-            <div class="col-md-9">
-              <label for="titulo_idea" class="form-label fw-bold text-primary">
-                Nombre del proyecto ID:
-              </label>
-              <input type="text" class="form-control" name="titulo_idea" value="{{ detalle_innovacion.titulo_idea }}" required>
-            </div>                   
-          </div>
-          <div class="row mt-4">
-            <div class="col-md-4">
-              <label for="fecha_inicio" class="form-label fw-bold text-primary">
-                Fecha de Inicio:
-              </label>
-              <input type="date" class="form-control" name="fecha_inicio" value="{{ detalle_innovacion.fecha_inicio }}" required>
-            </div>
-            <div class="col-md-8">
-              <label for="descripcion_idea" class="form-label fw-bold text-primary">
-                Resumen:
-              </label>
-              <textarea class="form-control" name="descripcion_idea" rows="2" required>{{ detalle_innovacion.descripcion_idea }}</textarea>
-            </div>
-          </div>
-          <div class="row mt-4">
-            <div class="col-md-6">
-              <label for="espacio_problema" class="form-label fw-bold text-primary">
-                Contexto del negocio:
-              </label>
-              <textarea class="form-control" name="espacio_problema" rows="2">{{ detalle_innovacion.espacio_problema }}</textarea>
-            </div>
-            <div class="col-md-6">
-              <label for="aspecto" class="form-label fw-bold text-primary">
-                Entorno competitivo:
-              </label>
-              <textarea class="form-control" name="aspecto" rows="2">{{ detalle_innovacion.aspecto }}</textarea>
-            </div>
-          </div>
-          <div class="row mt-4">
-            <div class="col-md-6">
-              <label for="roles" class="form-label fw-bold text-primary">
-                1. Definir roles del equipo de trabajo:
-              </label>
-              <textarea class="form-control" name="roles" rows="2">{{ detalle_innovacion.roles }}</textarea>
-            </div>
-            <div class="row mt-4">
-              <div class="col-md-6">
-                <label for="id_kim" class="form-label fw-bold text-primary">
-                  Estrategia de la matriz del conocimiento (KIM):
-                </label>
-                <select class="form-control" name="id_kim" id="id_kim">
-                  <option value="">Seleccione una opción</option>
-                  {% for kim_option in kim_options %}
-                    <option value="{{ kim_option.id_kim }}" 
-                      {% if detalle_innovacion.id_kim == kim_option.id_kim %}selected{% endif %}>
-                      {{ kim_option['nombre_kim'] }} - {{ kim_option['descripcion_kim'] }}
-                    </option>
-                  {% endfor %}
-                </select>
-              </div>
-            </div>
-          <div class="row mt-4">
-            <div class="col-md-12">
-              <label for="diseno" class="form-label fw-bold text-primary">
-                3. Diseño del proyecto de innovación digital:
-              </label>
-              <textarea class="form-control" name="diseno" rows="2">{{ detalle_innovacion.diseno }}</textarea>
-            </div>
-            <!-- Campo 'kim' corregido -->
-            
-          <div class="row mt-4">
-            <div class="col-md-12">
-              <label for="implementacion" class="form-label fw-bold text-primary">
-                4. Implementación y demostración:
-              </label>
-              <textarea class="form-control" name="implementacion" rows="2">{{ detalle_innovacion.implementacion }}</textarea>
-            </div>
-          </div>
-          <div class="row mt-4">
-            <div class="col-md-4">
-              <label for="fecha_plazo" class="form-label fw-bold text-primary">
-                Fecha plazo de implementación:
-              </label>
 
-              <input type="date" class="form-control" name="fecha_plazo" value="{{ detalle_innovacion.fecha_plazo }}">
-            </div>
-          </div>
-          <div class="row mt-4">
-            <div class="col-md-8">
-              <label for="evaluacion" class="form-label fw-bold text-primary">
-                5. Resultados de la encuesta de aceptación:
-              </label>
-              <textarea class="form-control" name="evaluacion" rows="2">{{ detalle_innovacion.evaluacion }}</textarea>
-            </div>
-            <div class="col-md-4">
-              <label for="aprender_planear" class="form-label fw-bold text-primary">
-                6. Planear nuevos proyectos de innovación digital:
-              </label>
-              <textarea class="form-control" name="aprender_planear" rows="2">{{ detalle_innovacion.aprender_planear }}</textarea>
-            </div>
-          </div>
-          <div class="row mt-4">
-            <div class="col-md-8">
-              <label for="ajustes" class="form-label fw-bold text-primary">
-                Base de conocimiento (ajustes necesarios): 
-              </label>
-              <textarea class="form-control" name="ajustes" rows="2">{{ detalle_innovacion.ajustes }}</textarea>
-            </div>
-            <div class="col-md-4">
-              <label for="fecha_fin" class="form-label fw-bold text-primary">
-                Fecha terminación proyecto ID:
-              </label>
-              <input type="date" class="form-control" name="fecha_fin" value="{{ detalle_innovacion.fecha_fin }}">
-            </div> 
-          </div>
-          <div class="row mt-4">         
-            <div class="col-md-3">
-              <label for="fecha_registro" class="form-label fw-bold text-primary">
-                FECHA Y HORA REGISTRO
-              </label>
-              <input type="text" class="form-control" name="fecha_registro" value="{{ detalle_innovacion.fecha_registro }}" readonly>
-            </div>           
-            <div class="col-md-3">
-              <label for="usuario_registro" class="form-label fw-bold text-primary">
-                Registrado por
-              </label>
-              <input type="text" class="form-control" name="usuario_registro" value="{{ detalle_innovacion.usuario_registro }}" readonly>
-            </div>
-            <div class="row mt-4">
-              <div class="col-md-6">
-                <label for="documentos_actuales" class="form-label fw-bold text-primary">
-                  Documentos Actuales:
-                </label>
-                <ul>
-                  {% for documento in documentos %}
-                    <li>
-                      <a href="{{ url_for('uploaded_file', filename=documento.nombre_documento) }}" target="_blank">
-                        Ver {{ documento.nombre_documento }}
-                      </a>
-                    </li>
-                  {% else %}
-                    <p>No hay archivos adjuntos.</p>
-                  {% endfor %}
-                </ul>
-              </div>          
-            <!-- Campo para cargar nuevos documentos -->
-              <div class="col-md-6">
-                <label for="nuevos_documentos" class="form-label fw-bold text-primary">
-                  Cargar soportes:
-                </label>
-                <input
-                  class="form-control"
-                  type="file"
-                  name="nuevos_documentos"
-                  id="nuevos_documentos"
-                  accept="application/pdf"
-                  multiple />
-              </div>         
-            </div>               
-          </div>
-          <div class="row mt-4">
-            <div class="col-md-12 text-center">
-              <button type="submit" class="btn btn-primary">
-                Actualizar Innovación
-              </button>
-            </div>
-          </div>
-        </div>
-      </form>
-      <!-- Fin del formulario -->
+  <!-- Paso 2 -->
+  <div class="tab-pane fade" id="step-2">
+    <div class="row">
+      <div class="col-md-6">
+        <label for="roles" class="form-label fw-bold text-primary">
+          1. Definir roles del equipo de trabajo:
+        </label>
+        <textarea class="form-control" name="roles" rows="2">{{ detalle_innovacion.roles }}</textarea>
+      </div>
+      <div class="col-md-6">
+        <label for="id_kim" class="form-label fw-bold text-primary">
+          Estrategia de la matriz del conocimiento (KIM):
+        </label>
+        <select class="form-control" name="id_kim" id="id_kim">
+          <option value="">Seleccione una opción</option>
+          {% for kim_option in kim_options %}
+            <option value="{{ kim_option.id_kim }}" 
+              {% if detalle_innovacion.id_kim == kim_option.id_kim %}selected{% endif %}>
+              {{ kim_option['nombre_kim'] }} - {{ kim_option['descripcion_kim'] }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-12">
+        <label for="diseno" class="form-label fw-bold text-primary">
+          3. Diseño del proyecto de innovación digital:
+        </label>
+        <textarea class="form-control" name="diseno" rows="2">{{ detalle_innovacion.diseno }}</textarea>
+      </div>
+      <div class="col-md-4">
+        <label for="fecha_plazo" class="form-label fw-bold text-primary">
+          Fecha plazo de implementación:
+        </label>
+        <input type="date" class="form-control" name="fecha_plazo" value="{{ detalle_innovacion.fecha_plazo }}">
+      </div>
+      <div class="col-md-12">
+        <label for="implementacion" class="form-label fw-bold text-primary">
+          4. Implementación y demostración:
+        </label>
+        <textarea class="form-control" name="implementacion" rows="2">{{ detalle_innovacion.implementacion }}</textarea>
+      </div>
+    </div>
+  </div>
+
+<!-- Paso 3 -->
+<div class="tab-pane fade" id="step-3">
+  <div class="row">
+    <div class="col-md-8">
+      <label for="evaluacion" class="form-label fw-bold text-primary">
+        5. Resultados de la encuesta de aceptación:
+      </label>
+      <textarea class="form-control" name="evaluacion" rows="2">{{ detalle_innovacion.evaluacion }}</textarea>
+    </div>
+    <div class="col-md-4">
+      <label for="aprender_planear" class="form-label fw-bold text-primary">
+        6. Planear nuevos proyectos de innovación digital:
+      </label>
+      <textarea class="form-control" name="aprender_planear" rows="2">{{ detalle_innovacion.aprender_planear }}</textarea>
+    </div>
+    <div class="col-md-8">
+      <label for="ajustes" class="form-label fw-bold text-primary">
+        Base de conocimiento (ajustes necesarios): 
+      </label>
+      <textarea class="form-control" name="ajustes" rows="2">{{ detalle_innovacion.ajustes }}</textarea>
+    </div>
+    <div class="col-md-4">
+      <label for="fecha_fin" class="form-label fw-bold text-primary">
+        Fecha terminación proyecto ID:
+      </label>
+      <input type="date" class="form-control" name="fecha_fin" value="{{ detalle_innovacion.fecha_fin }}">
+    </div>
+    <div class="col-md-3">
+      <label for="fecha_registro" class="form-label fw-bold text-primary">
+        FECHA Y HORA REGISTRO
+      </label>
+      <input type="text" class="form-control" name="fecha_registro" value="{{ detalle_innovacion.fecha_registro }}" readonly>
+    </div>
+    <div class="col-md-3">
+      <label for="usuario_registro" class="form-label fw-bold text-primary">
+        Registrado por
+      </label>
+      <input type="text" class="form-control" name="usuario_registro" value="{{ detalle_innovacion.usuario_registro }}" readonly>
+    </div>
+    <div class="col-md-6">
+      <label for="documentos_actuales" class="form-label fw-bold text-primary">
+        Documentos Actuales:
+      </label>
+      <ul>
+        {% for documento in documentos %}
+          <li>
+            <a href="{{ url_for('uploaded_file', filename=documento.nombre_documento) }}" target="_blank">
+              Ver {{ documento.nombre_documento }}
+            </a>
+          </li>
+        {% else %}
+          <p>No hay archivos adjuntos.</p>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="col-md-6">
+      <label for="nuevos_documentos" class="form-label fw-bold text-primary">
+        Cargar soportes:
+      </label>
+      <input
+        class="form-control"
+        type="file"
+        name="nuevos_documentos"
+        id="nuevos_documentos"
+        accept="application/pdf"
+        multiple />
     </div>
   </div>
 </div>
+</div>
+
+
+<!-- Botón Actualizar -->
+<div class="text-center mt-4">
+  <button type="submit" class="btn btn-primary">Actualizar Innovación</button>
+</div>
+</form>
+</div>
+</div>
+
 {% else %}
-<h2 class="text-center">
-  No existe la innovación 😭
-  <hr />
-</h2>
+<h2 class="text-center">No existe la innovación 😭</h2>
 {% endif %}
+{% endblock %}
+
+{% block customJS %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<script>
+$(document).ready(function () {
+$('.nav-tabs a').click(function (e) {
+e.preventDefault();
+$(this).tab('show');
+});
+});
+</script>
 {% endblock %}
