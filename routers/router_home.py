@@ -163,86 +163,104 @@ def lista_innovaciones():
     
 @app.route("/detalles-innovacion/<string:id_innovacion>", methods=['GET', 'POST'])
 def detalleInnovacion(id_innovacion=None):
-    if 'conectado' in session:
-        if id_innovacion is None:
-            return redirect(url_for('inicio'))
-        else:
-            # Obtener las opciones de KIM
-            kim_options = obtener_opciones_kim()
-
-            if request.method == 'POST':
-                # Procesar los datos del formulario
-                titulo_idea = request.form['titulo_idea']
-                fecha_inicio = request.form['fecha_inicio'] or None
-                descripcion_idea = request.form['descripcion_idea']
-                espacio_problema = request.form['espacio_problema']
-                aspecto = request.form['aspecto']
-                roles = request.form['roles']
-                diseno = request.form['diseno']
-                id_kim = request.form['id_kim']
-                implementacion = request.form['implementacion']
-                fecha_plazo = request.form['fecha_plazo'] or None
-                evaluacion = request.form['evaluacion']
-                aprender_planear = request.form['aprender_planear']
-                ajustes = request.form['ajustes']
-                fecha_fin = request.form['fecha_fin'] or None
-
-                # Actualizar la innovación en la base de datos
-                resultado = actualizar_innovacionBD(
-                    id_innovacion,
-                    titulo_idea,
-                    fecha_inicio,
-                    descripcion_idea,
-                    espacio_problema,
-                    aspecto,
-                    roles,
-                    diseno,
-                    id_kim,
-                    implementacion,
-                    fecha_plazo,
-                    evaluacion,
-                    aprender_planear,
-                    ajustes,
-                    fecha_fin
-                )
-
-                # Procesar nuevos documentos cargados
-                if 'nuevos_documentos' in request.files:
-                    documentos_pdf = request.files.getlist('nuevos_documentos')
-                    for documento in documentos_pdf:
-                        if documento and allowed_file(documento.filename):
-                            filename = secure_filename(documento.filename)
-                            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-                            filename_with_timestamp = f"{timestamp}_{filename}"
-                            file_path = os.path.join(upload_dir, filename_with_timestamp)
-                            documento.save(file_path)
-
-                            # Insertar información del archivo en la base de datos
-                            with connectionBD() as conexion_MySQLdb:
-                                with conexion_MySQLdb.cursor() as cursor:
-                                    sql_documento = ("INSERT INTO tbl_documentos_innovacion"
-                                                        "(id_innovacion, nombre_documento, usuario_registro) "
-                                                        "VALUES (%s, %s, %s)")
-                                    valores_documento = (id_innovacion, filename_with_timestamp, session['name_surname'])
-                                    cursor.execute(sql_documento, valores_documento)
-                                    conexion_MySQLdb.commit()
-
-                if resultado:
-                    flash('Innovación actualizada correctamente.', 'success')
-                else:
-                    flash('Ocurrió un error al actualizar la innovación.', 'error')
-                    
-                # Obtener los detalles y documentos actualizados
-                detalle_innovacion = sql_detalles_innovacionesBD(id_innovacion) or []
-                documentos = obtener_documentos_innovacion(id_innovacion)
-                return render_template('public/innovacion/detalles_innovacion.html', detalle_innovacion=detalle_innovacion, documentos=documentos, kim_options=kim_options)
-            else:
-                detalle_innovacion = sql_detalles_innovacionesBD(id_innovacion) or []
-                documentos = obtener_documentos_innovacion(id_innovacion)
-                return render_template('public/innovacion/detalles_innovacion.html', detalle_innovacion=detalle_innovacion, documentos=documentos, kim_options=kim_options)
-
-    else:
+    if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+    if id_innovacion is None:
+        flash('No se proporcionó un ID de innovación válido.', 'error')
+        return redirect(url_for('inicio'))
+
+    # Obtener las opciones de KIM y temas
+    kim_options = obtener_opciones_kim()
+    tema_options = obtener_opciones_tema()
+
+    if request.method == 'POST':
+        try:
+            # Procesar los datos del formulario
+            titulo_idea = request.form.get('titulo_idea')
+            fecha_inicio = request.form.get('fecha_inicio') or None
+            descripcion_idea = request.form.get('descripcion_idea')
+            espacio_problema = request.form.get('espacio_problema')
+            aspecto = request.form.get('aspecto')
+            roles = request.form.get('roles')
+            diseno = request.form.get('diseno')
+            id_kim = request.form.get('id_kim')
+            id_tema = request.form.get('id_tema')  # Obtener el id_tema seleccionado
+            implementacion = request.form.get('implementacion')
+            fecha_plazo = request.form.get('fecha_plazo') or None
+            evaluacion = request.form.get('evaluacion')
+            aprender_planear = request.form.get('aprender_planear')
+            ajustes = request.form.get('ajustes')
+            fecha_fin = request.form.get('fecha_fin') or None
+
+            # Actualizar la innovación en la base de datos
+            resultado = actualizar_innovacionBD(
+                id_innovacion,
+                titulo_idea,
+                fecha_inicio,
+                descripcion_idea,
+                espacio_problema,
+                aspecto,
+                roles,
+                diseno,
+                id_kim,
+                implementacion,
+                fecha_plazo,
+                evaluacion,
+                aprender_planear,
+                ajustes,
+                fecha_fin
+            )
+
+            if not resultado:
+                flash('Ocurrió un error al actualizar la innovación.', 'error')
+                return redirect(url_for('detalleInnovacion', id_innovacion=id_innovacion))
+
+            flash('Innovación actualizada correctamente.', 'success')
+
+            # Procesar nuevos documentos cargados
+            usuario_registro = session.get('name_surname')
+            if 'nuevos_documentos' in request.files:
+                documentos_pdf = request.files.getlist('nuevos_documentos')
+                for documento in documentos_pdf:
+                    if documento and allowed_file(documento.filename):
+                        filename = secure_filename(documento.filename)
+                        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                        filename_with_timestamp = f"{timestamp}_{filename}"
+                        file_path = os.path.join(upload_dir, filename_with_timestamp)
+                        documento.save(file_path)
+
+                        # Insertar el documento en la base de datos con id_tema
+                        insertar_documento_innovacion(id_innovacion, filename_with_timestamp, usuario_registro, id_tema)
+
+        except Exception as e:
+            print(f"Error al procesar el formulario: {e}")
+            flash('Ocurrió un error al procesar el formulario.', 'error')
+            return redirect(url_for('detalleInnovacion', id_innovacion=id_innovacion))
+
+    # Obtener los detalles y documentos actualizados
+    try:
+        detalle_innovacion = sql_detalles_innovacionesBD(id_innovacion) or []
+        documentos = obtener_documentos_innovacion(id_innovacion)
+
+        # Validar que los detalles se hayan obtenido
+        if not detalle_innovacion:
+            flash('No se encontraron detalles para esta innovación.', 'error')
+            return redirect(url_for('inicio'))
+
+        # Renderizar el formulario con los detalles
+        return render_template(
+            'public/innovacion/detalles_innovacion.html',
+            detalle_innovacion=detalle_innovacion,
+            documentos=documentos,
+            kim_options=kim_options,
+            tema_options=tema_options
+        )
+
+    except Exception as e:
+        print(f"Error al obtener los detalles de la innovación: {e}")
+        flash('Ocurrió un error al obtener los detalles de la innovación.', 'error')
         return redirect(url_for('inicio'))
 
 def obtener_opciones_kim():

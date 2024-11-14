@@ -155,22 +155,23 @@
               <input type="text" class="form-control" name="usuario_registro" value="{{ reporte_innovacion.usuario_registro }}" readonly>
             </div>
           </div>
-              <div class="col-md-6 mt-3 ">
-                <label for="documentos_actuales" class="form-label fw-bold text-primary">
-                  Documentos Actuales:
-                </label>
-                <ul>
-                  {% for documento in documentos %}
-                    <li>
-                      <a href="{{ url_for('uploaded_file', filename=documento.nombre_documento) }}" target="_blank">
-                        Ver {{ documento.nombre_documento }}
-                      </a>
-                    </li>
-                  {% else %}
-                    <p>No hay archivos adjuntos.</p>
-                  {% endfor %}
-                </ul>
-              </div>        
+          <div class="col-md-12 mt-12 ">
+            <br/>
+            <label for="documentos_actuales" class="form-label fw-bold text-primary">
+              Documentos Actuales:
+            </label>
+            <ul>
+              {% for documento in documentos %}
+                <li>
+                  <a href="{{ url_for('uploaded_file', filename=documento.nombre_documento) }}" target="_blank">
+                    Ver {{ documento.nombre_documento }} - Tema: {{ documento.descripcion_tema or 'Sin tema asignado' }}
+                  </a>
+                </li>
+              {% else %}
+                <p>No hay archivos adjuntos.</p>
+              {% endfor %}
+            </ul>
+          </div>        
             </div>               
           </div>
         </div>

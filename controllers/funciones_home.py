@@ -340,8 +340,9 @@ if not os.path.exists(upload_dir):
 ALLOWED_EXTENSIONS = {'pdf'}
 
 def allowed_file(filename):
-    """Verifica si el archivo es PDF."""
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    # Extensiones permitidas
+    allowed_extensions = {'pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
 def procesar_form_innovaciones(dataForm, request):
     try:
@@ -452,7 +453,17 @@ def sql_lista_innovacionesBD():
         print(f"Error en la función sql_lista_innovacionesBD: {e}")
         return None
     
-    
+def obtener_opciones_tema():
+    try:
+        with connectionBD() as conexion_MySQLdb:
+            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                querySQL = "SELECT id_tema, descripcion_tema FROM tbl_innovacion_tema"
+                cursor.execute(querySQL)
+                return cursor.fetchall()
+    except Exception as e:
+        print(f"Error al obtener opciones de tema: {e}")
+        return []
+
 def sql_detalles_innovacionesBD(id_innovacion):
     try:
         with connectionBD() as conexion_MySQLdb:
@@ -528,6 +539,7 @@ def actualizar_innovacionBD(
                         fecha_fin = %s
                     WHERE id_innovacion = %s
                 """
+                # Ejecutar la consulta con los parámetros correctos
                 cursor.execute(querySQL, (
                     titulo_idea,
                     fecha_inicio,
@@ -552,14 +564,39 @@ def actualizar_innovacionBD(
         return False
 
 
+
+
+def insertar_documento_innovacion(id_innovacion, nombre_documento, usuario_registro, id_tema):
+    try:
+        with connectionBD() as conexion_MySQLdb:
+            with conexion_MySQLdb.cursor() as cursor:
+                sql_documento = """
+                    INSERT INTO tbl_documentos_innovacion 
+                    (id_innovacion, nombre_documento, usuario_registro, id_tema)
+                    VALUES (%s, %s, %s, %s)
+                """
+                valores_documento = (id_innovacion, nombre_documento, usuario_registro, id_tema)
+                cursor.execute(sql_documento, valores_documento)
+                conexion_MySQLdb.commit()
+                print(f"Documento {nombre_documento} insertado con id_tema {id_tema}.")
+    except Exception as e:
+        print(f"Error al insertar el documento: {e}")
+
+
 def obtener_documentos_innovacion(id_innovacion):
     try:
         with connectionBD() as conexion_MySQLdb:
             with conexion_MySQLdb.cursor(dictionary=True) as cursor:
                 querySQL = """
-                    SELECT nombre_documento
-                    FROM tbl_documentos_innovacion
-                    WHERE id_innovacion = %s
+                    SELECT 
+                        d.nombre_documento,
+                        t.descripcion_tema
+                    FROM 
+                        tbl_documentos_innovacion AS d
+                    LEFT JOIN 
+                        tbl_innovacion_tema AS t ON d.id_tema = t.id_tema
+                    WHERE 
+                        d.id_innovacion = %s
                 """
                 cursor.execute(querySQL, (id_innovacion,))
                 documentos = cursor.fetchall()
@@ -567,6 +604,8 @@ def obtener_documentos_innovacion(id_innovacion):
     except Exception as e:
         print(f"Error al obtener documentos: {e}")
         return []
+    
+
 
 
 # Eliminar Innovación

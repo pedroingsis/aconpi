@@ -68,10 +68,11 @@ CREATE TABLE `tbl_documentos` (
 
 CREATE TABLE `tbl_documentos_innovacion` (
   `id_documento` int NOT NULL AUTO_INCREMENT,
-  `id_innovacion` int ,
-  `nombre_documento` varchar(100) NOT NULL,
+  `id_innovacion` int DEFAULT NULL,
+  `nombre_documento` varchar(500) NOT NULL,
   `fecha_registro` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `usuario_registro` varchar(45) DEFAULT NULL,
+  `id_tema` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id_documento`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -95,4 +96,10 @@ CREATE TABLE `tbl_proveedor` (
   `documento_proveedor` int NOT NULL,
   `razon_social` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `tbl_innovacion_tema` (
+  `id_tema` int NOT NULL AUTO_INCREMENT,
+  `descripcion_tema` varchar(500) NOT NULL,
+  PRIMARY KEY (`id_tema`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
