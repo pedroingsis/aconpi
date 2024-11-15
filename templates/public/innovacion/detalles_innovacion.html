@@ -198,38 +198,40 @@
               </ul>
             </div>
         
-            <div class="col-md-5">
-              <br/>
-              <label for="nuevos_documentos" class="form-label fw-bold text-primary">
-                Cargar soportes:
-              </label>
-              <input
-                class="form-control"
-                type="file"
-                name="nuevos_documentos"
-                id="nuevos_documentos"
-                accept="application/pdf"
-                multiple />
-            </div>
-            <div class="col-md-6">
-              <br/>
-              <label for="id_tema" class="form-label fw-bold text-primary">
-                Seleccionar Tema:
-              </label>
-              <select class="form-control" name="id_tema" id="id_tema">
-                <option value="">Seleccione un tema</option>
-                {% for tema in tema_options %}
-                  <option value="{{ tema.id_tema }}" 
-                    {% if detalle_innovacion.id_tema == tema.id_tema %}selected{% endif %}>
-                    {{ tema.descripcion_tema }}
-                  </option>
-                {% endfor %}
-              </select>
-            </div>
+            
           </div>
         </div>
         </div>
 
+        <div class="col-md-5">
+          <br/>
+          <label for="nuevos_documentos" class="form-label fw-bold text-primary">
+            Cargar soportes:
+          </label>
+          <input
+            class="form-control"
+            type="file"
+            name="nuevos_documentos"
+            id="nuevos_documentos"
+            accept="application/pdf"
+            multiple />
+        </div>
+        <div class="col-md-6">
+          <br/>
+          <label for="id_tema" class="form-label fw-bold text-primary">
+            Seleccionar Tema:
+          </label>
+          <select class="form-control" name="id_tema" id="id_tema">
+            <option value="">Seleccione un tema</option>
+            {% for tema in tema_options %}
+              <option value="{{ tema.id_tema }}" 
+                {% if detalle_innovacion.id_tema == tema.id_tema %}selected{% endif %}>
+                {{ tema.descripcion_tema }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12">
       <!-- Botón de envío -->
       <div class="text-center mt-4">
         <button type="submit" class="btn btn-primary">Actualizar Innovación</button>
