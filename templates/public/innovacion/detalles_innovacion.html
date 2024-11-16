@@ -12,7 +12,11 @@
 {% if detalle_innovacion %}
 <div class="container">
   <div class="card" style="padding: 20px; margin-top: 20px;">
-    <h3 class="text-center mt-5 mb-3 fw-bold">ACTUALIZANDO PROYECTOS DE INNOVACIÓN DIGITAL</h3>
+    <h3 class="text-center mt-5 mb-3 fw-bold">
+      <a href="/lista-de-innovaciones">
+        <i class="bi bi-arrow-left-circle"></i>
+      </a>
+      ACTUALIZANDO PROYECTOS DE INNOVACIÓN DIGITAL</h3>
     <hr />
 
     <!-- Formulario Multi-Paso -->
@@ -183,10 +187,12 @@
           </div>
         </div>
         </div>
-        <div class="col-md-12">
+
+
+        <!-- <div class="col-md-12">
           <br/>
           <label for="documentos_actuales" class="form-label fw-bold text-primary">
-            Documentos Actuales:
+            Lista de documentos adjunto:
           </label>
           <ul>
             {% for documento in documentos %}
@@ -199,6 +205,49 @@
               <p>No hay archivos adjuntos.</p>
             {% endfor %}
           </ul>
+        </div> -->
+        <div class="col-md-12 mt-12">
+          <br/>
+          <label for="documentos_actuales" class="form-label fw-bold text-primary">
+            Lista de documentos adjuntos:
+          </label>
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Archivo</th>
+                <th>Tema</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for documento in documentos %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td>
+                  {% if documento.nombre_documento.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')) %}
+                    <img src="{{ url_for('uploaded_file', filename=documento.nombre_documento) }}" 
+                         alt="Imagen adjunta" 
+                         class="img-thumbnail" 
+                         style="max-width: 100px; max-height: 100px;" />
+                  {% else %}
+                    {{ documento.nombre_documento }}
+                  {% endif %}
+                </td>
+                <td>{{ documento.descripcion_tema or 'Sin tema asignado' }}</td>
+                <td>
+                  <a href="{{ url_for('uploaded_file', filename=documento.nombre_documento) }}" target="_blank" class="btn btn-info btn-sm">
+                    Ver
+                  </a>
+                </td>
+              </tr>
+              {% else %}
+              <tr>
+                <td colspan="4" class="text-center">No hay archivos adjuntos.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
 
         <div class="col-md-5">
@@ -211,7 +260,7 @@
             type="file"
             name="nuevos_documentos"
             id="nuevos_documentos"
-            accept="application/pdf"
+            accept="application/pdf, image/jpeg, image/png, image/gif"
             multiple />
         </div>
         <div class="col-md-6">

@@ -7,7 +7,8 @@
 <div class="card">
   <div class="row justify-content-center mb-2">
     <div class="col-md-12 ps-4 pe-4">
-      <h3 class="text-center mt-5 mb-3 fw-bold">LISTA DE PROYECTOS DE INNOVACIÓN DIGITAL</h3>
+      <h3 class="text-center mt-5 mb-3 fw-bold">
+        LISTA DE PROYECTOS DE INNOVACIÓN DIGITAL</h3>
       <hr>
     </div>
 
@@ -35,9 +36,11 @@
             {% for innovacion in innovacion %}
             <tr id="innovacion_{{ innovacion.id_innovacion }}">
               <td>{{ loop.index }}</td>
-              <td>{{ innovacion.titulo_idea }}</td>
+              <td style="max-width: 150px; word-wrap: break-word; white-space: normal;">
+                {{ innovacion.titulo_idea }}
+              </td>
               <td>{{ innovacion.fecha_inicio}}</td>
-              <td>{{ innovacion.descripcion_idea }}</td>
+              <td class="resumen">{{ innovacion.descripcion_idea }}</td>
               <td width="10px">
                 <a
                   href="/reporte-innovacion/{{ innovacion.id_innovacion }}"
@@ -83,5 +86,13 @@
     </div>
   </div>
 </div>
+
+<style>
+  td.resumen {
+    max-width: 300px; /* Ajusta este valor según el espacio disponible */
+    word-wrap: break-word; /* Permite que el texto se ajuste en líneas */
+    white-space: normal; /* Evita que el texto permanezca en una sola línea */
+  }
+</style>
 
 {% endblock %}
