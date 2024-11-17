@@ -38,9 +38,18 @@
             <tr id="contrato_{{ contrato.id_contrato }}">
               <td>{{ loop.index }}</td>
               <td>{{ contrato.id_contrato }}</td>
-              <td>{{ contrato.razon_social }}</td>
-              <td>{{ contrato.objeto_contractual }}</td>
-              <td>{{ contrato.fecha_registro }}</td>
+              <!-- <td>{{ contrato.razon_social }}</td> -->
+              <td style="max-width: 50px; word-wrap: break-word; white-space: normal;">
+                {{ contrato.razon_social }}
+              </td>
+              <!-- <td>{{ contrato.objeto_contractual }}</td> -->
+              <td style="max-width: 150px; word-wrap: break-word; white-space: normal;">
+                {{ contrato.objeto_contractual }}
+              </td>
+              <!-- <td>{{ contrato.fecha_registro }}</td> -->
+              <td style="max-width: 70px; word-wrap: break-word; white-space: normal;">
+                {{ contrato.fecha_registro }}
+              </td>
               <td width="10px">
                 <a
                   href="/detalles-contrato/{{ contrato.id_contrato }}"
