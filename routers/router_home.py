@@ -356,3 +356,8 @@ def borrarPercepcion(id_percepcion):
     if resp:
         flash('El registro fue eliminado correctamente', 'success')
         return redirect(url_for('lista_percepcion'))
+
+#REPORTE DE BI
+@app.route('/power_bi')
+def power_bi():
+    return render_template('public/reportes/power_bi.html')
